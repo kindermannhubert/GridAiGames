@@ -7,6 +7,8 @@ namespace GridAiGames.Bomberman
 {
     internal class GameGrid : GameGrid<Player, ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>
     {
+        private readonly ReadOnly.GameGrid readOnlyGameGrid;
+
         public Random Random { get; }
 
         public GameGrid(
@@ -23,6 +25,7 @@ namespace GridAiGames.Bomberman
         {
             Random = rand;
             addGameObjects(this);
+            readOnlyGameGrid = new ReadOnly.GameGrid(width, height);
 
             Initialized = true;
         }
@@ -207,7 +210,8 @@ namespace GridAiGames.Bomberman
                     allObjects[x, y] = list;
                 }
 
-            return new ReadOnly.GameGrid(allObjects, Width, Height, AllPlayers.Select(p => GetReadonlyPlayer(p)).ToList());
+            readOnlyGameGrid.SetUp(allObjects, AllPlayers.Select(p => GetReadonlyPlayer(p)).ToList());
+            return readOnlyGameGrid;
         }
 
         private bool IsPositionAvailableForPlayer(Position position)

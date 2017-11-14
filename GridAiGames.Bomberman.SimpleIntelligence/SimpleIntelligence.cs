@@ -23,7 +23,7 @@ namespace GridAiGames.Bomberman.SimpleIntelligence
 
         private PlayerAction GetPlayerAction(GameGrid gameGrid, Player player)
         {
-            var nearestBomb = gameGrid.AllObjects.OfType<Bomb>().OrderBy(b => b.Position.DistanceSquared(player.Position)).FirstOrDefault();
+            var nearestBomb = gameGrid.Bombs.OrderBy(b => b.Position.DistanceSquared(player.Position)).FirstOrDefault();
 
             if (nearestBomb != null && nearestBomb.Position.DistanceSquared(player.Position) < nearestBomb.Radius * nearestBomb.Radius)
             {
@@ -62,16 +62,16 @@ namespace GridAiGames.Bomberman.SimpleIntelligence
         private static IEnumerable<Position> GetFreePositionsArroundPlayer(GameGrid gameGrid, Player player)
         {
             var newPos = player.Position.Left;
-            if (!gameGrid.GetObjects(newPos).OfType<Wall>().Any()) yield return newPos;
+            if (gameGrid.GetWall(newPos) == null) yield return newPos;
 
             newPos = player.Position.Up;
-            if (!gameGrid.GetObjects(newPos).OfType<Wall>().Any()) yield return newPos;
+            if (gameGrid.GetWall(newPos) == null) yield return newPos;
 
             newPos = player.Position.Right;
-            if (!gameGrid.GetObjects(newPos).OfType<Wall>().Any()) yield return newPos;
+            if (gameGrid.GetWall(newPos) == null) yield return newPos;
 
             newPos = player.Position.Down;
-            if (!gameGrid.GetObjects(newPos).OfType<Wall>().Any()) yield return newPos;
+            if (gameGrid.GetWall(newPos) == null) yield return newPos;
         }
 
         private static PlayerAction DirectionToMoveAction(Position direction)
