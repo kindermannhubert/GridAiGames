@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Configuration>
+  <Map>
+    <Width>24</Width>
+    <Height>16</Height>
+  </Map>
+  <Teams>
+    <Team>
+      <Name>Team 1</Name>
+      <Intelligence>
+        <AssemblyPath>..\..\..\GridAiGames.Bomberman.SimpleIntelligence\bin\Debug\GridAiGames.Bomberman.SimpleIntelligence.dll</AssemblyPath>
+        <TypeFullName>GridAiGames.Bomberman.SimpleIntelligence.SimpleIntelligence</TypeFullName>
+      </Intelligence>
+      <Players>
+        <Player>
+          <Name>Hubert 1</Name>
+        </Player>
+        <Player>
+          <Name>Hubert 2</Name>
+        </Player>
+      </Players>
+    </Team>
+    <Team>
+      <Name>Team 2</Name>
+      <Intelligence>
+        <AssemblyPath>..\..\..\GridAiGames.Bomberman.SimpleIntelligence\bin\Debug\GridAiGames.Bomberman.SimpleIntelligence.dll</AssemblyPath>
+        <TypeFullName>GridAiGames.Bomberman.SimpleIntelligence.SimpleIntelligence</TypeFullName>
+      </Intelligence>
+      <Players>
+        <Player>
+          <Name>Petr 1</Name>
+        </Player>
+        <Player>
+          <Name>Petr 2</Name>
+        </Player>
+      </Players>
+    </Team>
+  </Teams>
+</Configuration>
