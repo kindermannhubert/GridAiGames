@@ -221,8 +221,8 @@ namespace GridAiGames.Bomberman
                 switch (obj)
                 {
                     case Wall _:
-                        return false;
                     case Bomb _:
+                        return false;
                     case BombDetonationFire _:
                     case Bonus _:
                         break;

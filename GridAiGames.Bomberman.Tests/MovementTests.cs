@@ -20,12 +20,6 @@ namespace GridAiGames.Bomberman.Tests
             NonBlockedMovementTest(pos => new Bonus(pos, BonusType.Bomb));
         }
 
-        [TestMethod]
-        public void NonBlockedByBombMovementTest()
-        {
-            NonBlockedMovementTest(pos => new Bomb(pos, 3, 100, null));
-        }
-
         private void NonBlockedMovementTest(Func<Position, GameObject<Player, PlayerAction>> createNonBlockingObject)
         {
             const string PlayerName = "John";
@@ -94,6 +88,12 @@ namespace GridAiGames.Bomberman.Tests
             Assert.IsFalse(grid.GetPlayers(1, 1).Any());
             Assert.AreEqual(player, grid.GetPlayers(0, 0).Single());
             Assert.AreEqual(new Position(0, 0), player.Position);
+        }
+
+        [TestMethod]
+        public void BlockedByBombMovementTest()
+        {
+            BlockedMovementTest(pos => new Bomb(pos, 3, 100, null));
         }
 
         [TestMethod]

@@ -298,17 +298,17 @@ namespace GridAiGames.Bomberman.Tests
                     grid.Update();
                 }
 
-                intelligence.SetNextActions(grid, (PlayerName, PlayerAction.PlaceBomb));
-                grid.Update();
                 intelligence.SetNextActions(grid, (PlayerName, PlayerAction.MoveRight));
                 grid.Update();
                 intelligence.SetNextActions(grid, (PlayerName, PlayerAction.PlaceBomb));
                 grid.Update();
                 intelligence.SetNextActions(grid, (PlayerName, PlayerAction.MoveLeft));
                 grid.Update();
+                intelligence.SetNextActions(grid, (PlayerName, PlayerAction.PlaceBomb));
+                grid.Update();
                 Assert.IsTrue(grid.GetObjects(1, 1).Single() is Bomb);
                 Assert.IsTrue(grid.GetObjects(2, 1).Single() is Bomb);
-                while (((Bomb)grid.GetObjects(1, 1).Single()).DetonateAfter > 1)
+                while (((Bomb)grid.GetObjects(2, 1).Single()).DetonateAfter > 1)
                 {
                     grid.Update();
                 }
@@ -362,17 +362,17 @@ namespace GridAiGames.Bomberman.Tests
                     grid.Update();
                 }
 
-                intelligence.SetNextActions(grid, (PlayerName, PlayerAction.PlaceBomb));
-                grid.Update();
                 intelligence.SetNextActions(grid, (PlayerName, PlayerAction.MoveRight));
                 grid.Update();
                 intelligence.SetNextActions(grid, (PlayerName, PlayerAction.PlaceBomb));
                 grid.Update();
                 intelligence.SetNextActions(grid, (PlayerName, PlayerAction.MoveLeft));
                 grid.Update();
+                intelligence.SetNextActions(grid, (PlayerName, PlayerAction.PlaceBomb));
+                grid.Update();
                 Assert.IsTrue(grid.GetObjects(1, 1).Single() is Bomb);
                 Assert.IsTrue(grid.GetObjects(2, 1).Single() is Bomb);
-                while (((Bomb)grid.GetObjects(1, 1).Single()).DetonateAfter > 1)
+                while (((Bomb)grid.GetObjects(2, 1).Single()).DetonateAfter > 1)
                 {
                     grid.Update();
                 }
