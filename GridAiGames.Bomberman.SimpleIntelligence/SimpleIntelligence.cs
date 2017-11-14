@@ -8,6 +8,7 @@ namespace GridAiGames.Bomberman.SimpleIntelligence
     public class SimpleIntelligence : IIntelligence<GameGrid, Player, PlayerAction>
     {
         private static readonly Random rand = new Random(3);
+        private static readonly PlayerAction[] actionsForRandomPicking = new[] { PlayerAction.MoveLeft, PlayerAction.MoveUp, PlayerAction.MoveRight, PlayerAction.MoveDown, PlayerAction.PlaceBomb };
 
         public IEnumerable<(string playerName, PlayerAction action)>
             GetActionsForTeam(
@@ -55,7 +56,7 @@ namespace GridAiGames.Bomberman.SimpleIntelligence
             }
             else
             {
-                return (PlayerAction)rand.Next(1, 6);
+                return actionsForRandomPicking[rand.Next(actionsForRandomPicking.Length)];
             }
         }
 

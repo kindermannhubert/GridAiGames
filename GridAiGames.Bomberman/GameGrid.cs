@@ -37,7 +37,9 @@ namespace GridAiGames.Bomberman
                 case PlayerAction.None:
                     break;
                 case PlayerAction.MoveLeft:
+                case PlayerAction.MoveLeft | PlayerAction.PlaceBomb:
                     {
+                        PlaceBombIfRequested();
                         var newPos = player.Position.Left;
                         if (player.Position.X > 0 && IsPositionAvailableForPlayer(newPos))
                         {
@@ -46,7 +48,9 @@ namespace GridAiGames.Bomberman
                     }
                     break;
                 case PlayerAction.MoveUp:
+                case PlayerAction.MoveUp | PlayerAction.PlaceBomb:
                     {
+                        PlaceBombIfRequested();
                         var newPos = player.Position.Up;
                         if (player.Position.Y < Height - 1 && IsPositionAvailableForPlayer(newPos))
                         {
@@ -55,7 +59,9 @@ namespace GridAiGames.Bomberman
                     }
                     break;
                 case PlayerAction.MoveRight:
+                case PlayerAction.MoveRight | PlayerAction.PlaceBomb:
                     {
+                        PlaceBombIfRequested();
                         var newPos = player.Position.Right;
                         if (player.Position.X < Width - 1 && IsPositionAvailableForPlayer(newPos))
                         {
@@ -64,7 +70,9 @@ namespace GridAiGames.Bomberman
                     }
                     break;
                 case PlayerAction.MoveDown:
+                case PlayerAction.MoveDown | PlayerAction.PlaceBomb:
                     {
+                        PlaceBombIfRequested();
                         var newPos = player.Position.Down;
                         if (player.Position.Y > 0 && IsPositionAvailableForPlayer(newPos))
                         {
@@ -73,17 +81,23 @@ namespace GridAiGames.Bomberman
                     }
                     break;
                 case PlayerAction.PlaceBomb:
-                    if (IsPositionAvailableForBomb(player.Position))
-                    {
-                        var bomb = player.CreateBomb();
-                        if (bomb != null)
-                        {
-                            AddObject(bomb);
-                        }
-                    }
+                    PlaceBombIfRequested();
                     break;
                 default:
                     throw new InvalidOperationException($"Unknown player's action: '{action}'.");
+            }
+
+            void PlaceBombIfRequested()
+            {
+                if ((action & PlayerAction.PlaceBomb) == PlayerAction.None) return;
+                if (IsPositionAvailableForBomb(player.Position))
+                {
+                    var bomb = player.CreateBomb();
+                    if (bomb != null)
+                    {
+                        AddObject(bomb);
+                    }
+                }
             }
         }
 
