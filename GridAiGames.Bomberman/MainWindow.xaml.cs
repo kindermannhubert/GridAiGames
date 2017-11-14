@@ -16,15 +16,29 @@ namespace GridAiGames.Bomberman
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private readonly Thread backgroundThread;
         private bool cancelGame;
+        private GuiTeam[] teams;
 
-        public GuiTeam[] Teams { get; }
+        public GuiTeam[] Teams
+        {
+            get => teams;
+            set
+            {
+                teams = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public SpeedMultiplierWrap[] SpeedMultipliers { get; } = new SpeedMultiplierWrap[] { 1d / 16, 1d / 8, 1d / 4, 1d / 2, 1, 2, 4 };
+        public SpeedMultiplierWrap SpeedMultiplier { get; set; }
 
         public MainWindow()
         {
+            DataContext = this;
+
             InitializeComponent();
 
             var cfg = LoadConfiguration();
@@ -52,11 +66,11 @@ namespace GridAiGames.Bomberman
             backgroundThread = new Thread(() =>
                 {
                     ulong iteration = 0;
-                    const double UpdatingIntervalMs = 200;
-                    const int RenderFramesBetweenUpdate = 10;
 
                     while (!cancelGame)
                     {
+                        int UpdatingIntervalMs = (int)Math.Round(200 / SpeedMultiplier.Multiplier);
+                        int renderFramesBetweenUpdate = (int)Math.Ceiling(0.03 * UpdatingIntervalMs); //30 fps
                         grid.Update(iteration);
 
                         //var currentTeamsCount = grid.AllPlayers.Select(p => p.TeamName).Distinct().Count();
@@ -75,9 +89,9 @@ namespace GridAiGames.Bomberman
                         //}
 
                         renderingPanel.GameIteration = iteration;
-                        for (int i = 0; i < RenderFramesBetweenUpdate; i++)
+                        for (int i = 0; i < renderFramesBetweenUpdate; i++)
                         {
-                            renderingPanel.GameIteration = iteration + (double)i / RenderFramesBetweenUpdate;
+                            renderingPanel.GameIteration = iteration + (double)i / renderFramesBetweenUpdate;
                             try
                             {
                                 Dispatcher.Invoke(renderingPanel.InvalidateVisual);
@@ -86,15 +100,13 @@ namespace GridAiGames.Bomberman
                             {
                                 break;
                             }
-                            Thread.Sleep(TimeSpan.FromMilliseconds(UpdatingIntervalMs / RenderFramesBetweenUpdate));
+                            Thread.Sleep(TimeSpan.FromMilliseconds(UpdatingIntervalMs / renderFramesBetweenUpdate));
                         }
 
                         iteration++;
                     }
                 });
             backgroundThread.Start();
-
-            DataContext = this;
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -214,7 +226,12 @@ namespace GridAiGames.Bomberman
 
                 return DoesPlayerHaveSpaceForStartInternal(playerPosition, newWallPosition);
             }
+        }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName]string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public class GuiTeam
@@ -259,6 +276,14 @@ namespace GridAiGames.Bomberman
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
                 }
             }
+        }
+
+        public struct SpeedMultiplierWrap
+        {
+            public readonly double Multiplier;
+            public SpeedMultiplierWrap(double multiplier) => Multiplier = multiplier;
+            public override string ToString() => Multiplier >= 1 ? Multiplier.ToString() : $"1 / {1 / Multiplier}";
+            public static implicit operator SpeedMultiplierWrap(double value) => new SpeedMultiplierWrap(value);
         }
     }
 }

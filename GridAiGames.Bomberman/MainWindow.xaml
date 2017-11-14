@@ -13,9 +13,15 @@
             <ColumnDefinition Width="260" />
         </Grid.ColumnDefinitions>
 
-        <local:RenderingPanel Grid.Column="0" x:Name="renderingPanel" />
+        <local:RenderingPanel Grid.Column="0" x:Name="renderingPanel" Margin="4" />
 
         <StackPanel Grid.Column="1" Orientation="Vertical" >
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                <TextBlock Text="Speed: " Margin="0,4,0,0"/>
+                <ComboBox ItemsSource="{Binding SpeedMultipliers}" SelectedValue="{Binding SpeedMultiplier}" SelectedIndex="4" />
+                <TextBlock Text="x" Margin="0,4,0,0"/>
+            </StackPanel>
+
             <ListView ItemsSource="{Binding Teams}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
