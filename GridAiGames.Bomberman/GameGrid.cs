@@ -27,7 +27,7 @@ namespace GridAiGames.Bomberman
             addGameObjects(this);
             readOnlyGameGrid = new ReadOnly.GameGrid(width, height);
 
-            Initialized = true;
+            Initialize();
         }
 
         protected override void ProcessPlayerAction(Player player, PlayerAction action)

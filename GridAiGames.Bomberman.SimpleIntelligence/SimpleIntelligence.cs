@@ -10,6 +10,10 @@ namespace GridAiGames.Bomberman.SimpleIntelligence
         private static readonly Random rand = new Random(3);
         private static readonly PlayerAction[] actionsForRandomPicking = new[] { PlayerAction.MoveLeft, PlayerAction.MoveUp, PlayerAction.MoveRight, PlayerAction.MoveDown, PlayerAction.PlaceBomb };
 
+        public void Initialize(GameGrid gameGrid, IReadOnlyList<Player> teamPlayers)
+        {
+        }
+
         public IEnumerable<(string playerName, PlayerAction action)>
             GetActionsForTeam(
                 GameGrid gameGrid,

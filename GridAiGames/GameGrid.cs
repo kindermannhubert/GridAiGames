@@ -19,27 +19,7 @@ namespace GridAiGames
         private List<PlayerType>[,] newPlayers;
 
         private bool consolidationOfNewObjects;
-
         private bool initialized;
-        protected bool Initialized
-        {
-            get { return initialized; }
-            set
-            {
-                Debug.Assert(value, "Can be set only to true.");
-                initialized = value;
-
-                for (int y = 0; y < Height; y++)
-                    for (int x = 0; x < Width; x++)
-                    {
-                        newObjects[x, y].Clear();
-                        newObjects[x, y].AddRange(currentObjects[x, y]);
-
-                        newPlayers[x, y].Clear();
-                        newPlayers[x, y].AddRange(currentPlayers[x, y]);
-                    }
-            }
-        }
 
         public IEnumerable<GameObject<PlayerType, PlayerActionType>> AllObjects
         {
@@ -121,6 +101,28 @@ namespace GridAiGames
             }
         }
 
+        public void Initialize()
+        {
+            Debug.Assert(!initialized, "Grid is already initialized.");
+
+            for (int y = 0; y < Height; y++)
+                for (int x = 0; x < Width; x++)
+                {
+                    newObjects[x, y].Clear();
+                    newObjects[x, y].AddRange(currentObjects[x, y]);
+
+                    newPlayers[x, y].Clear();
+                    newPlayers[x, y].AddRange(currentPlayers[x, y]);
+                }
+
+            foreach (var team in teamDefinitions)
+            {
+                team.Intelligence.Initialize(GetReadonlyGameGrid(this), playersPerTeamName[team.Name].Select(player => GetReadonlyPlayer(player)).ToList());
+            }
+
+            initialized = true;
+        }
+
         public virtual void Update(ulong iteration)
         {
             if (!initialized) throw new InvalidOperationException("Grid should not be updated until its initialized flag is set to true.");
@@ -143,7 +145,7 @@ namespace GridAiGames
             {
                 var readonlyPlayers = playersPerTeamName[team.Name].Select(player => GetReadonlyPlayer(player)).ToList();
                 var actions = team.Intelligence.GetActionsForTeam(readOnlyGameGrid, readonlyPlayers, iteration).ToList();
-                if (!actions.GroupBy(a => a.playerName).All(g => g.Count() == 1))
+                if (actions.GroupBy(a => a.playerName).Any(g => g.Count() > 1))
                 {
                     //TODO warning
                     continue;
