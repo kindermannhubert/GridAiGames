@@ -22,7 +22,7 @@ Player hit by bomb detonation fire dies.
 ### How to create custom AI?
 1. Create new .NET class library.
 2. Add references to project "GridAiGames" and "GridAiGames.Bomberman.ReadOnly".
-3. Add new type which implements interface "IIntelligence<GameGrid, Player, PlayerAction>".
+3. Add new type which implements interface "IBombermanIntelligence".
 
 Example of simple intelligence can be found at project "GridAiGames.Bomberman.SimpleIntelligence".
 
