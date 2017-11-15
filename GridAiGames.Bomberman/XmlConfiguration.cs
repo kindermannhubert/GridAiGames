@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
+using GridAiGames.Logging;
 
 namespace GridAiGames.Bomberman
 {
@@ -16,8 +17,8 @@ namespace GridAiGames.Bomberman
         [XmlArrayItem("Team")]
         public XmlTeam[] Teams { get; set; }
 
-        public IReadOnlyList<TeamDefinition<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>> CreateTeamDefinitions()
-            => Teams.Select(t => t.CreateTeamDefinition()).ToList();
+        public IReadOnlyList<TeamDefinition<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>> CreateTeamDefinitions(ILogger logger)
+            => Teams.Select(t => t.CreateTeamDefinition(logger)).ToList();
 
         public class XmlMap
         {
@@ -35,9 +36,9 @@ namespace GridAiGames.Bomberman
 
             public XmlIntelligence Intelligence { get; set; }
 
-            public TeamDefinition<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction> CreateTeamDefinition()
+            public TeamDefinition<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction> CreateTeamDefinition(ILogger logger)
             {
-                if (!Intelligence.TryCreate(out var intelligence))
+                if (!Intelligence.TryCreate(out var intelligence, logger))
                 {
                     intelligence = new DummyIntelligence();
                 }
@@ -59,7 +60,7 @@ namespace GridAiGames.Bomberman
                 public string AssemblyPath { get; set; }
                 public string TypeFullName { get; set; }
 
-                public bool TryCreate(out IIntelligence<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction> intelligence)
+                public bool TryCreate(out IIntelligence<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction> intelligence, ILogger logger)
                 {
                     try
                     {
@@ -69,8 +70,9 @@ namespace GridAiGames.Bomberman
                         intelligence = (IIntelligence<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>)Activator.CreateInstance(type);
                         return true;
                     }
-                    catch
+                    catch (Exception e)
                     {
+                        logger.Log(LogType.Error, $"Error while loading type '{TypeFullName}' from assembly '{AssemblyPath}'. Exception: {e.Message}");
                         intelligence = null;
                         return false;
                     }

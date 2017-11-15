@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using GridAiGames.Bomberman.ReadOnly;
 
 namespace GridAiGames.Bomberman
 {
-    internal class DummyIntelligence : IIntelligence<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>
+    internal class DummyIntelligence : IBombermanIntelligence
     {
         public void Initialize(ReadOnly.GameGrid gameGrid, IReadOnlyList<ReadOnly.Player> teamPlayers)
         {
@@ -11,8 +12,7 @@ namespace GridAiGames.Bomberman
         public IEnumerable<(string playerName, PlayerAction action)>
             GetActionsForTeam(
                 ReadOnly.GameGrid gameGrid,
-                IReadOnlyList<ReadOnly.Player> teamPlayers,
-                ulong iteration)
+                IReadOnlyList<ReadOnly.Player> teamPlayers)
         {
             yield break;
         }

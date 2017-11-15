@@ -5,7 +5,7 @@ using GridAiGames.Bomberman.ReadOnly;
 
 namespace GridAiGames.Bomberman.SimpleIntelligence
 {
-    public class SimpleIntelligence : IIntelligence<GameGrid, Player, PlayerAction>
+    public class SimpleIntelligence : IBombermanIntelligence
     {
         private static readonly Random rand = new Random(3);
         private static readonly PlayerAction[] actionsForRandomPicking = new[] { PlayerAction.MoveLeft, PlayerAction.MoveUp, PlayerAction.MoveRight, PlayerAction.MoveDown, PlayerAction.PlaceBomb };
@@ -17,8 +17,7 @@ namespace GridAiGames.Bomberman.SimpleIntelligence
         public IEnumerable<(string playerName, PlayerAction action)>
             GetActionsForTeam(
                 GameGrid gameGrid,
-                IReadOnlyList<Player> teamPlayers,
-                ulong iteration)
+                IReadOnlyList<Player> teamPlayers)
         {
             foreach (var player in teamPlayers)
             {

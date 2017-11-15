@@ -4,12 +4,14 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml.Serialization;
 using GridAiGames.Bomberman.Gui;
+using GridAiGames.Logging;
 
 namespace GridAiGames.Bomberman
 {
@@ -18,6 +20,7 @@ namespace GridAiGames.Bomberman
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private readonly ILogger logger;
         private readonly Thread backgroundThread;
         private bool cancelGame;
         private GuiTeam[] teams;
@@ -39,6 +42,9 @@ namespace GridAiGames.Bomberman
         {
             DataContext = this;
 
+            logger = new ConsoleLogger();
+            //FreeConsole(); //if not using ConsoleLogger
+
             InitializeComponent();
 
             var cfg = LoadConfiguration();
@@ -46,10 +52,11 @@ namespace GridAiGames.Bomberman
             var rand = new Random(2);
             var grid = new GameGrid(
                 cfg.Map.Width, cfg.Map.Height,
-                cfg.CreateTeamDefinitions(),
+                cfg.CreateTeamDefinitions(logger),
                 (teamDef, playerDef) => new Position(1 + 2 * rand.Next(1, cfg.Map.Width / 2 - 1), 1 + 2 * rand.Next(0, cfg.Map.Height / 2 - 1)),
                 AddObjectsToGameGrid,
-                rand);
+                rand,
+                logger);
 
             renderingPanel.WpfRenderer = new WpfRenderer(grid);
 
@@ -285,5 +292,8 @@ namespace GridAiGames.Bomberman
             public override string ToString() => Multiplier >= 1 ? Multiplier.ToString() : $"1 / {1 / Multiplier}";
             public static implicit operator SpeedMultiplierWrap(double value) => new SpeedMultiplierWrap(value);
         }
+
+        [DllImport("kernel32")]
+        private static extern bool FreeConsole();
     }
 }

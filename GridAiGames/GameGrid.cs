@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using GridAiGames.Logging;
 
 namespace GridAiGames
 {
     public abstract class GameGrid<PlayerType, ReadOnlyGameGridType, ReadOnlyPlayerType, PlayerActionType> : IGameGrid<PlayerType, PlayerActionType>
         where PlayerType : Player<PlayerType, PlayerActionType>
     {
+        private readonly ILogger logger;
         private readonly IReadOnlyList<TeamDefinition<ReadOnlyGameGridType, ReadOnlyPlayerType, PlayerActionType>> teamDefinitions;
         private readonly Dictionary<string, List<PlayerType>> playersPerTeamName = new Dictionary<string, List<PlayerType>>();
         private readonly List<List<(string playerName, PlayerActionType action)>> actionsPerTeam = new List<List<(string, PlayerActionType)>>();
@@ -60,8 +62,10 @@ namespace GridAiGames
             int width,
             int height,
             IReadOnlyList<TeamDefinition<ReadOnlyGameGridType, ReadOnlyPlayerType, PlayerActionType>> teamDefinitions,
-            CreatePlayerHandler createPlayer)
+            CreatePlayerHandler createPlayer,
+            ILogger logger)
         {
+            this.logger = logger;
             Width = width;
             Height = height;
             this.teamDefinitions = teamDefinitions;
@@ -144,10 +148,11 @@ namespace GridAiGames
             foreach (var team in teamDefinitions)
             {
                 var readonlyPlayers = playersPerTeamName[team.Name].Select(player => GetReadonlyPlayer(player)).ToList();
-                var actions = team.Intelligence.GetActionsForTeam(readOnlyGameGrid, readonlyPlayers, iteration).ToList();
-                if (actions.GroupBy(a => a.playerName).Any(g => g.Count() > 1))
+                var actions = team.Intelligence.GetActionsForTeam(readOnlyGameGrid, readonlyPlayers).ToList();
+                foreach (var playerWithMoreThanOneAction in actions.GroupBy(a => a.playerName).Where(g => g.Count() > 1))
                 {
-                    //TODO warning
+                    logger.Log(LogType.Error, $"Player '{playerWithMoreThanOneAction.Key}' wanted to do more than one action. He's going to be disqualified. Actions: {string.Join(", ", playerWithMoreThanOneAction)}.");
+                    //playersPerTeamName[team.Name].Single(p=>p.Name == playerWithMoreThanOneAction.Key).Update
                     continue;
                 }
                 actionsPerTeam.Add(actions);

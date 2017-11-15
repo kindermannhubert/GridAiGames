@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using GridAiGames.Logging;
 
 namespace GridAiGames.Bomberman
 {
@@ -17,11 +18,13 @@ namespace GridAiGames.Bomberman
             IReadOnlyList<TeamDefinition<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>> teamDefinitions,
             Func<string, string, Position> getPlayerPosition,
             Action<GameGrid> addGameObjects,
-            Random rand)
+            Random rand,
+            ILogger logger)
             : base(
                   width, height,
                   teamDefinitions,
-                  (PlayerDefinition playerDefinition, string teamName) => new Player(playerDefinition.Name, teamName, getPlayerPosition(teamName, playerDefinition.Name)))
+                  (PlayerDefinition playerDefinition, string teamName) => new Player(playerDefinition.Name, teamName, getPlayerPosition(teamName, playerDefinition.Name)),
+                  logger)
         {
             Random = rand;
             addGameObjects(this);

@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using GridAiGames.Bomberman.ReadOnly;
 
 namespace GridAiGames.Bomberman.Tests
 {
-    internal class ManualIntelligence : IIntelligence<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>
+    internal class ManualIntelligence : IBombermanIntelligence
     {
         private readonly Dictionary<string, PlayerAction> nextActions = new Dictionary<string, PlayerAction>();
 
@@ -13,8 +14,7 @@ namespace GridAiGames.Bomberman.Tests
         public IEnumerable<(string playerName, PlayerAction action)>
             GetActionsForTeam(
                 ReadOnly.GameGrid gameGrid,
-                IReadOnlyList<ReadOnly.Player> teamPlayers,
-                ulong iteration)
+                IReadOnlyList<ReadOnly.Player> teamPlayers)
         {
             foreach (var player in teamPlayers)
             {

@@ -19,7 +19,8 @@ namespace GridAiGames.Bomberman.Tests
                   teamDefinitions,
                   (teamName, playerName) => playerPositionsPerName[playerName],
                   addGameObjects,
-                  new Random(1))
+                  new Random(1),
+                  new TestLogger())
         {
         }
 

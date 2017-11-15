@@ -58,6 +58,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BoundedTestGameGrid.cs" />
     <Compile Include="TestGameGrid.cs" />
+    <Compile Include="TestLogger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

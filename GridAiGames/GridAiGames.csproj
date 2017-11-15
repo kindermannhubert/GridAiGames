@@ -51,6 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameGrid.cs" />
+    <Compile Include="Logging\ConsoleLogger.cs" />
+    <Compile Include="Logging\DummyLogger.cs" />
+    <Compile Include="Logging\ILogger.cs" />
     <Compile Include="ReadOnlyGameObject.cs" />
     <Compile Include="IReadOnlyGameGrid.cs" />
     <Compile Include="IGameGrid.cs" />
