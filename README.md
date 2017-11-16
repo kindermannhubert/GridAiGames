@@ -19,6 +19,8 @@ Players can individualy upgrade detonation radius and maximum allowed number of 
 
 Player hit by bomb detonation fire dies.
 
+If player's AI throws an exception or returns more than one action for the player, player will be disqualified and will die.
+
 ### How to create custom AI?
 1. Create new .NET class library.
 2. Add references to project "GridAiGames" and "GridAiGames.Bomberman.ReadOnly".
