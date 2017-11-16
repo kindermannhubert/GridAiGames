@@ -58,6 +58,9 @@ namespace GridAiGames.Bomberman
                 rand,
                 logger);
 
+            logger.Log(LogType.Info, $"Grid size: ({grid.Width} x {grid.Height}).");
+            logger.Log(LogType.Info, $"Teams: {string.Join(", ", grid.Teams.Select(t => $"'{t.Name}'=({string.Join(", ", t.Players.Select(p => $"'{p.Name}'"))})"))}.");
+
             renderingPanel.WpfRenderer = new WpfRenderer(grid);
 
             Teams = grid.AllPlayers.GroupBy(p => p.TeamName)
@@ -68,10 +71,13 @@ namespace GridAiGames.Bomberman
                 player =>
                 {
                     Teams.SelectMany(t => t.Players).Single(p => p.Name == player.Name).IsAlive = player.IsAlive;
+                    logger.Log(LogType.Info, $"Player '{player.Name}' from team '{player.TeamName}' died.");
                 };
 
             backgroundThread = new Thread(() =>
                 {
+                    logger.Log(LogType.Info, $"Game started.");
+
                     ulong iteration = 0;
 
                     while (!cancelGame)

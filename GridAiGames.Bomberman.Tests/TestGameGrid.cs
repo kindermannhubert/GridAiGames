@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GridAiGames.Logging;
 
 namespace GridAiGames.Bomberman.Tests
 {
@@ -12,7 +13,8 @@ namespace GridAiGames.Bomberman.Tests
             int height,
             IReadOnlyList<TeamDefinition<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>> teamDefinitions,
             Dictionary<string, Position> playerPositionsPerName,
-            Action<GameGrid> addGameObjects)
+            Action<GameGrid> addGameObjects,
+            ILogger logger = null)
             : base(
                   width,
                   height,
@@ -20,7 +22,7 @@ namespace GridAiGames.Bomberman.Tests
                   (teamName, playerName) => playerPositionsPerName[playerName],
                   addGameObjects,
                   new Random(1),
-                  new TestLogger())
+                  logger ?? new TestLogger(canGenerateWarningAndErrors: false))
         {
         }
 

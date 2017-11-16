@@ -54,6 +54,7 @@
     <Compile Include="BombTests.cs" />
     <Compile Include="ManualIntelligence.cs" />
     <Compile Include="BonusTests.cs" />
+    <Compile Include="DisqualificationTests.cs" />
     <Compile Include="MovementTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BoundedTestGameGrid.cs" />

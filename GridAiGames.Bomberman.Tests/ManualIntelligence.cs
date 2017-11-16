@@ -5,7 +5,7 @@ namespace GridAiGames.Bomberman.Tests
 {
     internal class ManualIntelligence : IBombermanIntelligence
     {
-        private readonly Dictionary<string, PlayerAction> nextActions = new Dictionary<string, PlayerAction>();
+        private readonly Dictionary<string, List<PlayerAction>> nextActions = new Dictionary<string, List<PlayerAction>>();
 
         public void Initialize(ReadOnly.GameGrid gameGrid, IReadOnlyList<ReadOnly.Player> teamPlayers)
         {
@@ -20,7 +20,10 @@ namespace GridAiGames.Bomberman.Tests
             {
                 if (nextActions.ContainsKey(player.Name))
                 {
-                    yield return (player.Name, nextActions[player.Name]);
+                    foreach (var action in nextActions[player.Name])
+                    {
+                        yield return (player.Name, action);
+                    }
                 }
                 else
                 {
@@ -36,7 +39,13 @@ namespace GridAiGames.Bomberman.Tests
         {
             foreach (var item in actions)
             {
-                nextActions.Add(item.playerName, item.action);
+                if (!nextActions.TryGetValue(item.playerName, out var list))
+                {
+                    list = new List<PlayerAction>();
+                    nextActions.Add(item.playerName, list);
+                }
+
+                list.Add(item.action);
             }
         }
     }

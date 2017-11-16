@@ -8,7 +8,7 @@ namespace GridAiGames
 
         IEnumerable<(string playerName, PlayerActionType action)>
             GetActionsForTeam(
-            ReadOnlyGameGridType gameGrid,
-            IReadOnlyList<ReadOnlyPlayerType> teamPlayers);
+                ReadOnlyGameGridType gameGrid,
+                IReadOnlyList<ReadOnlyPlayerType> teamPlayers);
     }
 }

@@ -12,7 +12,7 @@ namespace GridAiGames
         private readonly ILogger logger;
         private readonly IReadOnlyList<TeamDefinition<ReadOnlyGameGridType, ReadOnlyPlayerType, PlayerActionType>> teamDefinitions;
         private readonly Dictionary<string, List<PlayerType>> playersPerTeamName = new Dictionary<string, List<PlayerType>>();
-        private readonly List<List<(string playerName, PlayerActionType action)>> actionsPerTeam = new List<List<(string, PlayerActionType)>>();
+        private readonly List<List<(string playerName, PlayerActionExtended<PlayerActionType> action)>> actionsPerTeam = new List<List<(string, PlayerActionExtended<PlayerActionType>)>>();
 
         private List<GameObject<PlayerType, PlayerActionType>>[,] currentObjects;
         private List<PlayerType>[,] currentPlayers;
@@ -22,6 +22,8 @@ namespace GridAiGames
 
         private bool consolidationOfNewObjects;
         private bool initialized;
+
+        public IReadOnlyList<TeamDefinition<ReadOnlyGameGridType, ReadOnlyPlayerType, PlayerActionType>> Teams => teamDefinitions;
 
         public IEnumerable<GameObject<PlayerType, PlayerActionType>> AllObjects
         {
@@ -148,14 +150,48 @@ namespace GridAiGames
             foreach (var team in teamDefinitions)
             {
                 var readonlyPlayers = playersPerTeamName[team.Name].Select(player => GetReadonlyPlayer(player)).ToList();
-                var actions = team.Intelligence.GetActionsForTeam(readOnlyGameGrid, readonlyPlayers).ToList();
-                foreach (var playerWithMoreThanOneAction in actions.GroupBy(a => a.playerName).Where(g => g.Count() > 1))
+
+                bool exceptionThrown = false;
+                IEnumerable<(string playerName, PlayerActionType action)> actions;
+                try
                 {
-                    logger.Log(LogType.Error, $"Player '{playerWithMoreThanOneAction.Key}' wanted to do more than one action. He's going to be disqualified. Actions: {string.Join(", ", playerWithMoreThanOneAction)}.");
-                    //playersPerTeamName[team.Name].Single(p=>p.Name == playerWithMoreThanOneAction.Key).Update
-                    continue;
+                    actions = team.Intelligence.GetActionsForTeam(readOnlyGameGrid, readonlyPlayers).ToList();
                 }
-                actionsPerTeam.Add(actions);
+                catch (Exception ex)
+                {
+                    actions = team.Players.Select(p => (p.Name, default(PlayerActionType))).ToList();
+                    exceptionThrown = true;
+                    logger.Log(LogType.Error, $"AI of team '{team.Name}' has thrown exception. Players of this team is going to be disqualified. Exception: '{ex}'");
+                }
+
+                var extendedActions = new List<(string playerName, PlayerActionExtended<PlayerActionType> action)>();
+                foreach (var playerActionsGroup in actions.GroupBy(a => a.playerName))
+                {
+                    if (exceptionThrown)
+                    {
+                        foreach (var action in playerActionsGroup)
+                        {
+                            extendedActions.Add((action.playerName, new PlayerActionExtended<PlayerActionType>(disqualifyPlayer: true)));
+                        }
+                    }
+                    else
+                    {
+                        if (playerActionsGroup.Count() > 1)
+                        {
+                            logger.Log(LogType.Error, $"Player '{playerActionsGroup.Key}' wanted to do more than one action. He's going to be disqualified. Actions: {string.Join(", ", playerActionsGroup.Select(a => a.action))}.");
+                            extendedActions.Add((playerActionsGroup.Key, new PlayerActionExtended<PlayerActionType>(disqualifyPlayer: true)));
+                            break;
+                        }
+                        else
+                        {
+                            foreach (var action in playerActionsGroup)
+                            {
+                                extendedActions.Add((action.playerName, new PlayerActionExtended<PlayerActionType>(action.action)));
+                            }
+                        }
+                    }
+                }
+                actionsPerTeam.Add(extendedActions);
             }
 
             for (int y = 0; y < Height; y++)
@@ -264,7 +300,7 @@ namespace GridAiGames
             }
         }
 
-        protected abstract void ProcessPlayerAction(PlayerType player, PlayerActionType action);
+        protected abstract void ProcessPlayerAction(PlayerType player, PlayerActionExtended<PlayerActionType> action);
 
         public delegate PlayerType CreatePlayerHandler(PlayerDefinition playerDefinition, string teamName);
 

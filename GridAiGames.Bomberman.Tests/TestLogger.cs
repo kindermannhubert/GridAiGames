@@ -5,6 +5,13 @@ namespace GridAiGames.Bomberman.Tests
 {
     internal class TestLogger : ILogger
     {
+        private readonly bool canGenerateWarningAndErrors;
+
+        public TestLogger(bool canGenerateWarningAndErrors)
+        {
+            this.canGenerateWarningAndErrors = canGenerateWarningAndErrors;
+        }
+
         public void Log(LogType type, string message)
         {
             switch (type)
@@ -13,7 +20,11 @@ namespace GridAiGames.Bomberman.Tests
                     break;
                 case LogType.Warning:
                 case LogType.Error:
-                    throw new InvalidOperationException("Unit tests should not generate warnings or errors.");
+                    if (!canGenerateWarningAndErrors)
+                    {
+                        throw new InvalidOperationException("Unit tests should not generate warnings or errors.");
+                    }
+                    break;
                 default:
                     throw new InvalidOperationException($"Unknown log type: '{type}'.");
             }

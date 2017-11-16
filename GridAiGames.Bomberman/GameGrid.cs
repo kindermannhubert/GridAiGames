@@ -33,9 +33,19 @@ namespace GridAiGames.Bomberman
             Initialize();
         }
 
-        protected override void ProcessPlayerAction(Player player, PlayerAction action)
+        protected override void ProcessPlayerAction(Player player, PlayerActionExtended<PlayerAction> action)
         {
-            switch (action)
+            if (action.DisqualifyPlayer)
+            {
+                player.Life = 0;
+                if (!player.IsAlive)
+                {
+                    RemovePlayer(player);
+                }
+                return;
+            }
+
+            switch (action.Action)
             {
                 case PlayerAction.None:
                     break;
@@ -92,7 +102,7 @@ namespace GridAiGames.Bomberman
 
             void PlaceBombIfRequested()
             {
-                if ((action & PlayerAction.PlaceBomb) == PlayerAction.None) return;
+                if ((action.Action & PlayerAction.PlaceBomb) == PlayerAction.None) return;
                 if (IsPositionAvailableForBomb(player.Position))
                 {
                     var bomb = player.CreateBomb();
