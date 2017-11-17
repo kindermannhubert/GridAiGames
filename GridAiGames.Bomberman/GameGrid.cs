@@ -50,10 +50,7 @@ namespace GridAiGames.Bomberman
                     {
                         PlaceBombIfRequested();
                         var newPos = player.Position.Left;
-                        if (player.Position.X > 0 && IsPositionAvailableForPlayer(newPos))
-                        {
-                            MoveObject(player, player.Position, newPos);
-                        }
+                        MovePlayerIf(newPos, player.Position.X > 0 && IsPositionAvailableForPlayer(newPos));
                     }
                     break;
                 case PlayerAction.MoveUp:
@@ -61,10 +58,7 @@ namespace GridAiGames.Bomberman
                     {
                         PlaceBombIfRequested();
                         var newPos = player.Position.Up;
-                        if (player.Position.Y < Height - 1 && IsPositionAvailableForPlayer(newPos))
-                        {
-                            MoveObject(player, player.Position, newPos);
-                        }
+                        MovePlayerIf(newPos, player.Position.Y < Height - 1 && IsPositionAvailableForPlayer(newPos));
                     }
                     break;
                 case PlayerAction.MoveRight:
@@ -72,10 +66,7 @@ namespace GridAiGames.Bomberman
                     {
                         PlaceBombIfRequested();
                         var newPos = player.Position.Right;
-                        if (player.Position.X < Width - 1 && IsPositionAvailableForPlayer(newPos))
-                        {
-                            MoveObject(player, player.Position, newPos);
-                        }
+                        MovePlayerIf(newPos, player.Position.X < Width - 1 && IsPositionAvailableForPlayer(newPos));
                     }
                     break;
                 case PlayerAction.MoveDown:
@@ -83,17 +74,14 @@ namespace GridAiGames.Bomberman
                     {
                         PlaceBombIfRequested();
                         var newPos = player.Position.Down;
-                        if (player.Position.Y > 0 && IsPositionAvailableForPlayer(newPos))
-                        {
-                            MoveObject(player, player.Position, newPos);
-                        }
+                        MovePlayerIf(newPos, player.Position.Y > 0 && IsPositionAvailableForPlayer(newPos));
                     }
                     break;
                 case PlayerAction.PlaceBomb:
                     PlaceBombIfRequested();
                     break;
                 default:
-                    logger.Log(LogType.Error, $"Player '{player.Name}' wanted to do unsupported action. He's going to be disqualified. Action: '{action.Action}'.");
+                    logger.Log(LogType.Error, $"Player '{player.Name}' from team '{player.TeamName}' wanted to do unsupported action. He's going to be disqualified. Action: '{action.Action}'.");
                     DisqualifyPlayer();
                     return;
             }
@@ -107,7 +95,29 @@ namespace GridAiGames.Bomberman
                     if (bomb != null)
                     {
                         AddObject(bomb);
+                        logger.Log(LogType.Info, $"Player '{player.Name}' from team '{player.TeamName}' placed bomb at position {player.Position}.");
                     }
+                    else
+                    {
+                        logger.Log(LogType.Warning, $"Player '{player.Name}' from team '{player.TeamName}' was unable to place bomb at position {player.Position} because he reached max numeber of bombs he can place at the same time.");
+                    }
+                }
+                else
+                {
+                    logger.Log(LogType.Warning, $"Player '{player.Name}' from team '{player.TeamName}' was unable to place bomb at position {player.Position} because his position is unsuitable for this.");
+                }
+            }
+
+            void MovePlayerIf(Position newPosition, bool move)
+            {
+                if (move)
+                {
+                    logger.Log(LogType.Info, $"Player '{player.Name}' from team '{player.TeamName}' moved from {player.Position} to {newPosition}.");
+                    MoveObject(player, player.Position, newPosition);
+                }
+                else
+                {
+                    logger.Log(LogType.Warning, $"Player '{player.Name}' from team '{player.TeamName}' was unable to move from {player.Position} to {newPosition} because new position is unsuitable for player.");
                 }
             }
 

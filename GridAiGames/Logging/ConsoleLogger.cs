@@ -27,7 +27,7 @@ namespace GridAiGames.Logging
                         throw new InvalidOperationException($"Unknown log type: '{type}'.");
                 }
 
-                Console.Write(DateTime.Now.ToString("HH:mm:ss.ff"));
+                Console.Write(DateTime.Now.ToString("HH:mm:ss.fff"));
                 Console.Write(" - ");
                 Console.WriteLine(message);
 
