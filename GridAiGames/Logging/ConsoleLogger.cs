@@ -29,6 +29,8 @@ namespace GridAiGames.Logging
 
                 Console.Write(DateTime.Now.ToString("HH:mm:ss.fff"));
                 Console.Write(" - ");
+                Console.Write(System.Threading.Thread.CurrentThread.ManagedThreadId);
+                Console.Write(" - ");
                 Console.WriteLine(message);
 
                 Console.ForegroundColor = oldColor;

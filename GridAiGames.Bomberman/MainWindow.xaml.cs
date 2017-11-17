@@ -21,8 +21,8 @@ namespace GridAiGames.Bomberman
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private readonly ILogger logger;
-        private readonly Thread backgroundThread;
-        private bool cancelGame;
+        private Thread backgroundThread;
+        private volatile bool cancelGame;
         private GuiTeam[] teams;
 
         public GuiTeam[] Teams
@@ -46,6 +46,27 @@ namespace GridAiGames.Bomberman
             //FreeConsole(); //if not using ConsoleLogger
 
             InitializeComponent();
+
+            RestartGame();
+        }
+
+        private XmlConfiguration LoadConfiguration()
+        {
+            using (var stream = File.OpenText("GridAiGames.Bomberman.Configuration.xml"))
+            {
+                var serializer = new XmlSerializer(typeof(XmlConfiguration));
+                return (XmlConfiguration)serializer.Deserialize(stream);
+            }
+        }
+
+        private void RestartGame()
+        {
+            if (backgroundThread != null)
+            {
+                cancelGame = true;
+                backgroundThread.Join();
+            }
+            cancelGame = false;
 
             var cfg = LoadConfiguration();
 
@@ -75,50 +96,50 @@ namespace GridAiGames.Bomberman
                 };
 
             backgroundThread = new Thread(() =>
+            {
+                logger.Log(LogType.Info, $"Game started.");
+
+                ulong iteration = 0;
+
+                while (!cancelGame)
                 {
-                    logger.Log(LogType.Info, $"Game started.");
+                    int UpdatingIntervalMs = (int)Math.Round(200 / SpeedMultiplier.Multiplier);
+                    int renderFramesBetweenUpdate = (int)Math.Ceiling(0.03 * UpdatingIntervalMs); //30 fps
+                    grid.Update(iteration);
 
-                    ulong iteration = 0;
+                    //var currentTeamsCount = grid.AllPlayers.Select(p => p.TeamName).Distinct().Count();
+                    //if (currentTeamsCount < 2)
+                    //{
+                    //    if (currentTeamsCount == 0)
+                    //    {
+                    //        Console.WriteLine("Nobody wins.");
+                    //        break;
+                    //    }
+                    //    if (currentTeamsCount == 1)
+                    //    {
+                    //        Console.WriteLine($"Team '{grid.AllPlayers}' won.");
+                    //        break;
+                    //    }
+                    //}
 
-                    while (!cancelGame)
+                    renderingPanel.GameIteration = iteration;
+                    for (int i = 0; i < renderFramesBetweenUpdate; i++)
                     {
-                        int UpdatingIntervalMs = (int)Math.Round(200 / SpeedMultiplier.Multiplier);
-                        int renderFramesBetweenUpdate = (int)Math.Ceiling(0.03 * UpdatingIntervalMs); //30 fps
-                        grid.Update(iteration);
-
-                        //var currentTeamsCount = grid.AllPlayers.Select(p => p.TeamName).Distinct().Count();
-                        //if (currentTeamsCount < 2)
-                        //{
-                        //    if (currentTeamsCount == 0)
-                        //    {
-                        //        Console.WriteLine("Nobody wins.");
-                        //        break;
-                        //    }
-                        //    if (currentTeamsCount == 1)
-                        //    {
-                        //        Console.WriteLine($"Team '{grid.AllPlayers}' won.");
-                        //        break;
-                        //    }
-                        //}
-
-                        renderingPanel.GameIteration = iteration;
-                        for (int i = 0; i < renderFramesBetweenUpdate; i++)
+                        renderingPanel.GameIteration = iteration + (double)i / renderFramesBetweenUpdate;
+                        try
                         {
-                            renderingPanel.GameIteration = iteration + (double)i / renderFramesBetweenUpdate;
-                            try
-                            {
-                                Dispatcher.Invoke(renderingPanel.InvalidateVisual);
-                            }
-                            catch (TaskCanceledException)
-                            {
-                                break;
-                            }
-                            Thread.Sleep(TimeSpan.FromMilliseconds(UpdatingIntervalMs / renderFramesBetweenUpdate));
+                            Dispatcher.BeginInvoke(new Action(renderingPanel.InvalidateVisual));
                         }
-
-                        iteration++;
+                        catch (TaskCanceledException)
+                        {
+                            break;
+                        }
+                        Thread.Sleep(TimeSpan.FromMilliseconds(UpdatingIntervalMs / renderFramesBetweenUpdate));
                     }
-                });
+
+                    iteration++;
+                }
+            });
             backgroundThread.Start();
         }
 
@@ -128,15 +149,6 @@ namespace GridAiGames.Bomberman
             backgroundThread.Join(500);
 
             base.OnClosing(e);
-        }
-
-        private XmlConfiguration LoadConfiguration()
-        {
-            using (var stream = File.OpenText("GridAiGames.Bomberman.Configuration.xml"))
-            {
-                var serializer = new XmlSerializer(typeof(XmlConfiguration));
-                return (XmlConfiguration)serializer.Deserialize(stream);
-            }
         }
 
         private static void AddObjectsToGameGrid(GameGrid grid)
@@ -301,5 +313,10 @@ namespace GridAiGames.Bomberman
 
         [DllImport("kernel32")]
         private static extern bool FreeConsole();
+
+        private void RestartButton_Click(object sender, RoutedEventArgs e)
+        {
+            RestartGame();
+        }
     }
 }

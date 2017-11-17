@@ -16,6 +16,8 @@
         <local:RenderingPanel Grid.Column="0" x:Name="renderingPanel" Margin="4" />
 
         <StackPanel Grid.Column="1" Orientation="Vertical" >
+            <Button Content="Restart" Click="RestartButton_Click" Margin="4" />
+
             <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
                 <TextBlock Text="Speed: " Margin="0,4,0,0"/>
                 <ComboBox ItemsSource="{Binding SpeedMultipliers}" SelectedValue="{Binding SpeedMultiplier}" SelectedIndex="4" />

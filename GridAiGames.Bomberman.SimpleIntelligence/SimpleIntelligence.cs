@@ -7,8 +7,9 @@ namespace GridAiGames.Bomberman.SimpleIntelligence
 {
     public class SimpleIntelligence : IBombermanIntelligence
     {
-        private static readonly Random rand = new Random(3);
         private static readonly PlayerAction[] actionsForRandomPicking = new[] { PlayerAction.MoveLeft, PlayerAction.MoveUp, PlayerAction.MoveRight, PlayerAction.MoveDown, PlayerAction.PlaceBomb };
+
+        private readonly Random rand = new Random(5);
 
         public void Initialize(GameGrid gameGrid, IReadOnlyList<Player> teamPlayers)
         {
