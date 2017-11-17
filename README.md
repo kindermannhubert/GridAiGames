@@ -1,3 +1,4 @@
+
 # GridAiGames
 Simple framework for creating time discrete 2D grid games driven by AI.
 
@@ -19,12 +20,13 @@ Players can individualy upgrade detonation radius and maximum allowed number of 
 
 Player hit by bomb detonation fire dies.
 
-####Disqualification
+#### Disqualification
 Players can be disqualified for these reasons:
 1. Player's AI throws an exception.
 2. Player wants to do more than one action
 3. Player wants to do unsupported/unknown action.
-Disqualification means that player will will die.
+
+Disqualification means that player will die.
 
 ### How to create custom AI?
 1. Create new .NET class library.
