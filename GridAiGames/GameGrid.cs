@@ -9,7 +9,6 @@ namespace GridAiGames
     public abstract class GameGrid<PlayerType, ReadOnlyGameGridType, ReadOnlyPlayerType, PlayerActionType> : IGameGrid<PlayerType, PlayerActionType>
         where PlayerType : Player<PlayerType, PlayerActionType>
     {
-        private readonly ILogger logger;
         private readonly IReadOnlyList<TeamDefinition<ReadOnlyGameGridType, ReadOnlyPlayerType, PlayerActionType>> teamDefinitions;
         private readonly Dictionary<string, List<PlayerType>> playersPerTeamName = new Dictionary<string, List<PlayerType>>();
         private readonly List<List<(string playerName, PlayerActionExtended<PlayerActionType> action)>> actionsPerTeam = new List<List<(string, PlayerActionExtended<PlayerActionType>)>>();
@@ -22,6 +21,8 @@ namespace GridAiGames
 
         private bool consolidationOfNewObjects;
         private bool initialized;
+
+        protected readonly ILogger logger;
 
         public IReadOnlyList<TeamDefinition<ReadOnlyGameGridType, ReadOnlyPlayerType, PlayerActionType>> Teams => teamDefinitions;
 

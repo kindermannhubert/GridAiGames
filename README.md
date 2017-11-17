@@ -19,7 +19,12 @@ Players can individualy upgrade detonation radius and maximum allowed number of 
 
 Player hit by bomb detonation fire dies.
 
-If player's AI throws an exception or returns more than one action for the player, player will be disqualified and will die.
+####Disqualification
+Players can be disqualified for these reasons:
+1. Player's AI throws an exception.
+2. Player wants to do more than one action
+3. Player wants to do unsupported/unknown action.
+Disqualification means that player will will die.
 
 ### How to create custom AI?
 1. Create new .NET class library.

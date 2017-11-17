@@ -37,11 +37,7 @@ namespace GridAiGames.Bomberman
         {
             if (action.DisqualifyPlayer)
             {
-                player.Life = 0;
-                if (!player.IsAlive)
-                {
-                    RemovePlayer(player);
-                }
+                DisqualifyPlayer();
                 return;
             }
 
@@ -97,7 +93,9 @@ namespace GridAiGames.Bomberman
                     PlaceBombIfRequested();
                     break;
                 default:
-                    throw new InvalidOperationException($"Unknown player's action: '{action}'.");
+                    logger.Log(LogType.Error, $"Player '{player.Name}' wanted to do unsupported action. He's going to be disqualified. Action: '{action.Action}'.");
+                    DisqualifyPlayer();
+                    return;
             }
 
             void PlaceBombIfRequested()
@@ -110,6 +108,15 @@ namespace GridAiGames.Bomberman
                     {
                         AddObject(bomb);
                     }
+                }
+            }
+
+            void DisqualifyPlayer()
+            {
+                player.Life = 0;
+                if (!player.IsAlive)
+                {
+                    RemovePlayer(player);
                 }
             }
         }

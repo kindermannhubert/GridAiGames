@@ -28,7 +28,6 @@ namespace GridAiGames.Bomberman.Tests
 
             var player = grid.AllPlayers.Single(p => p.Name == PlayerName);
 
-
             //one action is ok
             intelligence.SetNextActions(grid, (PlayerName, PlayerAction.MoveRight));
             grid.Update();
@@ -38,6 +37,39 @@ namespace GridAiGames.Bomberman.Tests
             //but two are not
             intelligence.SetNextActions(grid, (PlayerName, PlayerAction.MoveRight));
             intelligence.SetNextActions(grid, (PlayerName, PlayerAction.MoveRight));
+            grid.Update();
+            Assert.AreEqual(0, grid.AllPlayers.Count());
+            Assert.IsFalse(player.IsAlive);
+        }
+
+        [TestMethod]
+        public void DisqualifyPlayerBecauseHeWantedToUnsupportedAction()
+        {
+            const string PlayerName = "John";
+            var intelligence = new ManualIntelligence();
+
+            var grid = new TestGameGrid(
+                2, 2,
+                new TeamDefinition<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>[]
+                {
+                    new TeamDefinition<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>("Team A", new[] { new PlayerDefinition(PlayerName) }, intelligence)
+                },
+                new Dictionary<string, Position>() { { PlayerName, new Position(0, 0) } },
+                _ =>
+                {
+                },
+                new TestLogger(canGenerateWarningAndErrors: true));
+
+            var player = grid.AllPlayers.Single(p => p.Name == PlayerName);
+
+            //known action is ok
+            intelligence.SetNextActions(grid, (PlayerName, PlayerAction.MoveRight));
+            grid.Update();
+            Assert.AreEqual(1, grid.AllPlayers.Count());
+            Assert.IsTrue(player.IsAlive);
+
+            //unknown is not
+            intelligence.SetNextActions(grid, (PlayerName, (PlayerAction)9999));
             grid.Update();
             Assert.AreEqual(0, grid.AllPlayers.Count());
             Assert.IsFalse(player.IsAlive);
