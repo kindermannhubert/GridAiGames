@@ -26,7 +26,7 @@ Players can be disqualified for these reasons:
 2. Player wants to do more than one action
 3. Player wants to do unsupported/unknown action.
 
-Disqualification means that player will will die.
+Disqualification means that player will die.
 
 ### How to create custom AI?
 1. Create new .NET class library.
