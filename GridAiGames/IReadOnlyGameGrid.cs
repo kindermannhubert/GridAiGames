@@ -2,27 +2,24 @@
 
 namespace GridAiGames
 {
-    public interface IReadOnlyGameGrid<PlayerType, PlayerActionType>
-        where PlayerType : IPlayer<PlayerType, PlayerActionType>
+    public interface IReadOnlyGameGrid
     {
         int Width { get; }
         int Height { get; }
 
-        IEnumerable<GameObject<PlayerType, PlayerActionType>> AllObjects { get; }
-        IEnumerable<PlayerType> AllPlayers { get; }
+        IEnumerable<IReadOnlyGameObject> AllObjects { get; }
+        IEnumerable<IPlayer> AllPlayers { get; }
 
-        IReadOnlyList<GameObject<PlayerType, PlayerActionType>> GetObjects(int x, int y);
-        IReadOnlyList<PlayerType> GetPlayers(int x, int y);
+        IReadOnlyList<IReadOnlyGameObject> GetObjects(int x, int y);
+        IReadOnlyList<IPlayer> GetPlayers(int x, int y);
     }
 
     public static class IReadOnlyGameGridX
     {
-        public static IReadOnlyList<GameObject<PlayerType, PlayerActionType>> GetObjects<PlayerType, PlayerActionType>(this IReadOnlyGameGrid<PlayerType, PlayerActionType> grid, Position position)
-            where PlayerType : Player<PlayerType, PlayerActionType>
+        public static IReadOnlyList<IReadOnlyGameObject> GetObjects(this IReadOnlyGameGrid grid, Position position)
             => grid.GetObjects(position.X, position.Y);
 
-        public static IReadOnlyList<GameObject<PlayerType, PlayerActionType>> GetPlayers<PlayerType, PlayerActionType>(this IReadOnlyGameGrid<PlayerType, PlayerActionType> grid, Position position)
-            where PlayerType : Player<PlayerType, PlayerActionType>
-            => grid.GetObjects(position.X, position.Y);
+        public static IReadOnlyList<IPlayer> GetPlayers(this IReadOnlyGameGrid grid, Position position)
+            => grid.GetPlayers(position.X, position.Y);
     }
 }

@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace GridAiGames.Bomberman.ReadOnly
 {
-    public class GameGrid
+    public class GameGrid : IReadOnlyGameGrid
     {
         private readonly IReadOnlyList<IReadOnlyGameObject>[,] allObjects;
         private readonly List<IWall> allWalls;
@@ -18,12 +18,13 @@ namespace GridAiGames.Bomberman.ReadOnly
         public int Width { get; }
         public int Height { get; }
 
-        public IReadOnlyList<IPlayer> Players { get; private set; }
+        IEnumerable<GridAiGames.IPlayer> IReadOnlyGameGrid.AllPlayers => AllPlayers;
+        public IReadOnlyList<IPlayer> AllPlayers { get; private set; }
         public IReadOnlyList<IWall> Walls => allWalls;
         public IReadOnlyList<IBomb> Bombs => allBombs;
         public IReadOnlyList<IBonus> Bonuses => allBonuses;
 
-        public IEnumerable<IReadOnlyGameObject> Objects
+        public IEnumerable<IReadOnlyGameObject> AllObjects
         {
             get
             {
@@ -87,7 +88,7 @@ namespace GridAiGames.Bomberman.ReadOnly
 
         internal void SetUp(IReadOnlyList<IReadOnlyGameObject>[,] allObjects, IReadOnlyList<IPlayer> allPlayers)
         {
-            Players = allPlayers;
+            AllPlayers = allPlayers;
 
             Array.Clear(walls, 0, Width * Height);
             Array.Clear(bombs, 0, Width * Height);
@@ -126,6 +127,11 @@ namespace GridAiGames.Bomberman.ReadOnly
                         }
                     }
                 }
+        }
+
+        public IReadOnlyList<GridAiGames.IPlayer> GetPlayers(int x, int y)
+        {
+            throw new NotImplementedException();
         }
     }
 }

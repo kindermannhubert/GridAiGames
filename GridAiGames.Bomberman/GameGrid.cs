@@ -7,7 +7,7 @@ using GridAiGames.Logging;
 
 namespace GridAiGames.Bomberman
 {
-    internal class GameGrid : GameGrid<Player, ReadOnly.GameGrid, IPlayer, PlayerAction>
+    internal class GameGrid : GameGrid<Player, ReadOnly.GameGrid, ReadOnly.IPlayer, PlayerAction>
     {
         private readonly ReadOnly.GameGrid readOnlyGameGrid;
 
@@ -16,7 +16,7 @@ namespace GridAiGames.Bomberman
         public GameGrid(
             int width,
             int height,
-            IReadOnlyList<TeamDefinition<ReadOnly.GameGrid, IPlayer, PlayerAction>> teamDefinitions,
+            IReadOnlyList<TeamDefinition<ReadOnly.GameGrid, ReadOnly.IPlayer, PlayerAction>> teamDefinitions,
             Func<string, string, Position> getPlayerPosition,
             Action<GameGrid> addGameObjects,
             Random rand,
@@ -51,7 +51,7 @@ namespace GridAiGames.Bomberman
                     {
                         PlaceBombIfRequested();
                         var newPos = player.Position.Left;
-                        MovePlayerIf(newPos, player.Position.X > 0 && IsPositionAvailableForPlayer(newPos));
+                        MovePlayerIf(newPos, player.Position.X > 0 && this.IsPositionAvailableForPlayer(newPos));
                     }
                     break;
                 case PlayerAction.MoveUp:
@@ -59,7 +59,7 @@ namespace GridAiGames.Bomberman
                     {
                         PlaceBombIfRequested();
                         var newPos = player.Position.Up;
-                        MovePlayerIf(newPos, player.Position.Y < Height - 1 && IsPositionAvailableForPlayer(newPos));
+                        MovePlayerIf(newPos, player.Position.Y < Height - 1 && this.IsPositionAvailableForPlayer(newPos));
                     }
                     break;
                 case PlayerAction.MoveRight:
@@ -67,7 +67,7 @@ namespace GridAiGames.Bomberman
                     {
                         PlaceBombIfRequested();
                         var newPos = player.Position.Right;
-                        MovePlayerIf(newPos, player.Position.X < Width - 1 && IsPositionAvailableForPlayer(newPos));
+                        MovePlayerIf(newPos, player.Position.X < Width - 1 && this.IsPositionAvailableForPlayer(newPos));
                     }
                     break;
                 case PlayerAction.MoveDown:
@@ -75,7 +75,7 @@ namespace GridAiGames.Bomberman
                     {
                         PlaceBombIfRequested();
                         var newPos = player.Position.Down;
-                        MovePlayerIf(newPos, player.Position.Y > 0 && IsPositionAvailableForPlayer(newPos));
+                        MovePlayerIf(newPos, player.Position.Y > 0 && this.IsPositionAvailableForPlayer(newPos));
                     }
                     break;
                 case PlayerAction.PlaceBomb:
@@ -90,7 +90,7 @@ namespace GridAiGames.Bomberman
             void PlaceBombIfRequested()
             {
                 if ((action.Action & PlayerAction.PlaceBomb) == PlayerAction.None) return;
-                if (IsPositionAvailableForBomb(player.Position))
+                if (this.IsPositionAvailableForBomb(player.Position))
                 {
                     var bomb = player.CreateBomb();
                     if (bomb != null)
@@ -211,12 +211,12 @@ namespace GridAiGames.Bomberman
                 }
         }
 
-        protected override IPlayer GetReadonlyPlayer(Player player)
+        protected override ReadOnly.IPlayer GetReadonlyPlayer(Player player)
         {
             return new ReadOnly.Player(player.Name, player.TeamName, player.Position, player.MaxPossibleNumberOfBombs, player.AvailableBombs, player.BombsFireRadius, player.BombsDetonationTime, player.PreviousPosition, player.IsAlive);
         }
 
-        protected override ReadOnly.GameGrid GetReadonlyGameGrid(GameGrid<Player, ReadOnly.GameGrid, IPlayer, PlayerAction> gameGrid)
+        protected override ReadOnly.GameGrid GetReadonlyGameGrid(GameGrid<Player, ReadOnly.GameGrid, ReadOnly.IPlayer, PlayerAction> gameGrid)
         {
             var allObjects = new IReadOnlyList<ReadOnlyGameObject>[Width, Height];
             for (int y = 0; y < Height; y++)
@@ -257,44 +257,6 @@ namespace GridAiGames.Bomberman
 
             readOnlyGameGrid.SetUp(allObjects, AllPlayers.Select(p => GetReadonlyPlayer(p)).ToList());
             return readOnlyGameGrid;
-        }
-
-        private bool IsPositionAvailableForPlayer(Position position)
-        {
-            foreach (var obj in GetObjects(position))
-            {
-                switch (obj)
-                {
-                    case Wall _:
-                    case Bomb _:
-                        return false;
-                    case BombDetonationFire _:
-                    case Bonus _:
-                        break;
-                    default:
-                        throw new InvalidOperationException($"Unknown object type: '{obj.GetType().FullName}'.");
-                }
-            }
-            return true;
-        }
-
-        private bool IsPositionAvailableForBomb(Position position)
-        {
-            foreach (var obj in GetObjects(position))
-            {
-                switch (obj)
-                {
-                    case Wall _:
-                    case Bomb _:
-                        return false;
-                    case BombDetonationFire _:
-                    case Bonus _:
-                        break;
-                    default:
-                        throw new InvalidOperationException($"Unknown object type: '{obj.GetType().FullName}'.");
-                }
-            }
-            return true;
         }
     }
 }

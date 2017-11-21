@@ -322,5 +322,10 @@ namespace GridAiGames
                 }
             }
         }
+
+        IEnumerable<IReadOnlyGameObject> IReadOnlyGameGrid.AllObjects => AllObjects;
+        IEnumerable<IPlayer> IReadOnlyGameGrid.AllPlayers => AllPlayers;
+        IReadOnlyList<IReadOnlyGameObject> IReadOnlyGameGrid.GetObjects(int x, int y) => GetObjects(x, y);
+        IReadOnlyList<IPlayer> IReadOnlyGameGrid.GetPlayers(int x, int y) => GetPlayers(x, y);
     }
 }

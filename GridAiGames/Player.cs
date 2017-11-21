@@ -2,17 +2,15 @@
 
 namespace GridAiGames
 {
-    public interface IPlayer<PlayerType, PlayerActionType> : IReadOnlyGameObject
-        where PlayerType : IPlayer<PlayerType, PlayerActionType>
+    public interface IPlayer : IReadOnlyGameObject
     {
         Position PreviousPosition { get; }
         bool IsAlive { get; }
         string Name { get; }
         string TeamName { get; }
-        //event Action<PlayerType> IsAliveChanged;
     }
 
-    public abstract class Player<PlayerType, PlayerActionType> : GameObject<PlayerType, PlayerActionType>, IPlayer<PlayerType, PlayerActionType>
+    public abstract class Player<PlayerType, PlayerActionType> : GameObject<PlayerType, PlayerActionType>, IPlayer
         where PlayerType : Player<PlayerType, PlayerActionType>
     {
         private Position previousPosition;

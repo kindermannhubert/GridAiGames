@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
-using GridAiGames.Bomberman.ReadOnly;
 using GridAiGames.Logging;
 
 namespace GridAiGames.Bomberman
@@ -18,7 +17,7 @@ namespace GridAiGames.Bomberman
         [XmlArrayItem("Team")]
         public XmlTeam[] Teams { get; set; }
 
-        public IReadOnlyList<TeamDefinition<ReadOnly.GameGrid, IPlayer, PlayerAction>> CreateTeamDefinitions(ILogger logger)
+        public IReadOnlyList<TeamDefinition<ReadOnly.GameGrid, ReadOnly.IPlayer, PlayerAction>> CreateTeamDefinitions(ILogger logger)
             => Teams.Select(t => t.CreateTeamDefinition(logger)).ToList();
 
         public class XmlMap
@@ -37,7 +36,7 @@ namespace GridAiGames.Bomberman
 
             public XmlIntelligence Intelligence { get; set; }
 
-            public TeamDefinition<ReadOnly.GameGrid, IPlayer, PlayerAction> CreateTeamDefinition(ILogger logger)
+            public TeamDefinition<ReadOnly.GameGrid, ReadOnly.IPlayer, PlayerAction> CreateTeamDefinition(ILogger logger)
             {
                 if (!Intelligence.TryCreate(out var intelligence, logger))
                 {
@@ -46,7 +45,7 @@ namespace GridAiGames.Bomberman
 
                 var playerDefinitions = Players.Select(p => p.CreatePlayerDefinition()).ToList();
 
-                return new TeamDefinition<ReadOnly.GameGrid, IPlayer, PlayerAction>(Name, playerDefinitions, intelligence);
+                return new TeamDefinition<ReadOnly.GameGrid, ReadOnly.IPlayer, PlayerAction>(Name, playerDefinitions, intelligence);
             }
 
             public class XmlPlayer
@@ -61,14 +60,14 @@ namespace GridAiGames.Bomberman
                 public string AssemblyPath { get; set; }
                 public string TypeFullName { get; set; }
 
-                public bool TryCreate(out IIntelligence<ReadOnly.GameGrid, IPlayer, PlayerAction> intelligence, ILogger logger)
+                public bool TryCreate(out IIntelligence<ReadOnly.GameGrid, ReadOnly.IPlayer, PlayerAction> intelligence, ILogger logger)
                 {
                     try
                     {
                         var path = Path.IsPathRooted(AssemblyPath) ? AssemblyPath : Path.GetFullPath(AssemblyPath);
                         var assembly = Assembly.LoadFile(path);
                         var type = assembly.GetType(TypeFullName);
-                        intelligence = (IIntelligence<ReadOnly.GameGrid, IPlayer, PlayerAction>)Activator.CreateInstance(type);
+                        intelligence = (IIntelligence<ReadOnly.GameGrid, ReadOnly.IPlayer, PlayerAction>)Activator.CreateInstance(type);
                         return true;
                     }
                     catch (Exception e)

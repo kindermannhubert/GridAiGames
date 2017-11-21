@@ -1,6 +1,8 @@
-﻿namespace GridAiGames.Bomberman
+﻿using GridAiGames.Bomberman.ReadOnly;
+
+namespace GridAiGames.Bomberman
 {
-    internal class BombDetonationFire : GameObject<Player, PlayerAction>
+    internal class BombDetonationFire : GameObject<Player, PlayerAction>, IBombDetonationFire
     {
         private int DisappearAfter;
         private bool isBurning;

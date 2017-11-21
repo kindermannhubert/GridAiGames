@@ -44,12 +44,14 @@
     <Compile Include="Bomb.cs" />
     <Compile Include="Bonus.cs" />
     <Compile Include="BonusType.cs" />
+    <Compile Include="IBombDetonationFire.cs" />
     <Compile Include="IBombermanIntelligence.cs" />
     <Compile Include="PlayerAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameGrid.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="ReadOnlyGameObject.cs" />
+    <Compile Include="BombermanGridExtensions.cs" />
     <Compile Include="Wall.cs" />
   </ItemGroup>
   <ItemGroup>

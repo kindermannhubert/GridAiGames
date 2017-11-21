@@ -1,6 +1,6 @@
 ﻿namespace GridAiGames.Bomberman.ReadOnly
 {
-    public interface IPlayer : IPlayer<Player, PlayerAction>
+    public interface IPlayer : GridAiGames.IPlayer
     {
         //string Name { get; }
         int MaxPossibleNumberOfBombs { get; }

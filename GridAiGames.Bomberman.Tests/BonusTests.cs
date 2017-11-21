@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GridAiGames.Bomberman.ReadOnly;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GridAiGames.Bomberman.Tests
@@ -37,9 +36,9 @@ namespace GridAiGames.Bomberman.Tests
 
             var grid = new TestGameGrid(
                 2, 2,
-                new TeamDefinition<ReadOnly.GameGrid, IPlayer, PlayerAction>[]
+                new TeamDefinition<ReadOnly.GameGrid, ReadOnly.IPlayer, PlayerAction>[]
                 {
-                    new TeamDefinition<ReadOnly.GameGrid, IPlayer, PlayerAction>("Team A", new[] { new PlayerDefinition(PlayerName) }, intelligence)
+                    new TeamDefinition<ReadOnly.GameGrid, ReadOnly.IPlayer, PlayerAction>("Team A", new[] { new PlayerDefinition(PlayerName) }, intelligence)
                 },
                 new Dictionary<string, Position>() { { PlayerName, new Position(0, 0) } },
                 g =>
