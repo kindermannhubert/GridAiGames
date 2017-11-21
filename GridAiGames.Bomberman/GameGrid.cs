@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using GridAiGames.Bomberman.ReadOnly;
 using GridAiGames.Logging;
 
 namespace GridAiGames.Bomberman
 {
-    internal class GameGrid : GameGrid<Player, ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>
+    internal class GameGrid : GameGrid<Player, ReadOnly.GameGrid, IPlayer, PlayerAction>
     {
         private readonly ReadOnly.GameGrid readOnlyGameGrid;
 
@@ -15,7 +16,7 @@ namespace GridAiGames.Bomberman
         public GameGrid(
             int width,
             int height,
-            IReadOnlyList<TeamDefinition<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>> teamDefinitions,
+            IReadOnlyList<TeamDefinition<ReadOnly.GameGrid, IPlayer, PlayerAction>> teamDefinitions,
             Func<string, string, Position> getPlayerPosition,
             Action<GameGrid> addGameObjects,
             Random rand,
@@ -210,12 +211,12 @@ namespace GridAiGames.Bomberman
                 }
         }
 
-        protected override ReadOnly.Player GetReadonlyPlayer(Player player)
+        protected override IPlayer GetReadonlyPlayer(Player player)
         {
-            return new ReadOnly.Player(player.Name, player.Position, player.MaxPossibleNumberOfBombs, player.AvailableBombs, player.BombsFireRadius, player.BombsDetonationTime);
+            return new ReadOnly.Player(player.Name, player.TeamName, player.Position, player.MaxPossibleNumberOfBombs, player.AvailableBombs, player.BombsFireRadius, player.BombsDetonationTime, player.PreviousPosition, player.IsAlive);
         }
 
-        protected override ReadOnly.GameGrid GetReadonlyGameGrid(GameGrid<Player, ReadOnly.GameGrid, ReadOnly.Player, PlayerAction> gameGrid)
+        protected override ReadOnly.GameGrid GetReadonlyGameGrid(GameGrid<Player, ReadOnly.GameGrid, IPlayer, PlayerAction> gameGrid)
         {
             var allObjects = new IReadOnlyList<ReadOnlyGameObject>[Width, Height];
             for (int y = 0; y < Height; y++)

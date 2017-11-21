@@ -1,6 +1,12 @@
 ﻿namespace GridAiGames.Bomberman.ReadOnly
 {
-    public class Bomb : ReadOnlyGameObject
+    public interface IBomb : IReadOnlyGameObject
+    {
+        int Radius { get; }
+        int DetonateAfter { get; }
+    }
+
+    public class Bomb : ReadOnlyGameObject, IBomb
     {
         public int Radius { get; }
         public int DetonateAfter { get; private set; }

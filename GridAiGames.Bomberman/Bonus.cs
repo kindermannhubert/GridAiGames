@@ -1,6 +1,8 @@
-﻿namespace GridAiGames.Bomberman
+﻿using GridAiGames.Bomberman.ReadOnly;
+
+namespace GridAiGames.Bomberman
 {
-    internal class Bonus : GameObject<Player, PlayerAction>
+    internal class Bonus : GameObject<Player, PlayerAction>, IBonus
     {
         public BonusType Type { get; }
 

@@ -11,7 +11,7 @@ namespace GridAiGames.Bomberman.Tests
         public TestGameGrid(
             int width,
             int height,
-            IReadOnlyList<TeamDefinition<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>> teamDefinitions,
+            IReadOnlyList<TeamDefinition<ReadOnly.GameGrid, ReadOnly.IPlayer, PlayerAction>> teamDefinitions,
             Dictionary<string, Position> playerPositionsPerName,
             Action<GameGrid> addGameObjects,
             ILogger logger = null)

@@ -16,9 +16,9 @@ namespace GridAiGames.Bomberman.Tests
 
             var grid = new TestGameGrid(
                 2, 2,
-                new TeamDefinition<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>[]
+                new TeamDefinition<ReadOnly.GameGrid, IPlayer, PlayerAction>[]
                 {
-                    new TeamDefinition<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>("Team A", new[] { new PlayerDefinition(PlayerName) }, intelligence)
+                    new TeamDefinition<ReadOnly.GameGrid, IPlayer, PlayerAction>("Team A", new[] { new PlayerDefinition(PlayerName) }, intelligence)
                 },
                 new Dictionary<string, Position>() { { PlayerName, new Position(0, 0) } },
                 _ =>
@@ -50,9 +50,9 @@ namespace GridAiGames.Bomberman.Tests
 
             var grid = new TestGameGrid(
                 2, 2,
-                new TeamDefinition<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>[]
+                new TeamDefinition<ReadOnly.GameGrid, IPlayer, PlayerAction>[]
                 {
-                    new TeamDefinition<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>("Team A", new[] { new PlayerDefinition(PlayerName) }, intelligence)
+                    new TeamDefinition<ReadOnly.GameGrid, IPlayer, PlayerAction>("Team A", new[] { new PlayerDefinition(PlayerName) }, intelligence)
                 },
                 new Dictionary<string, Position>() { { PlayerName, new Position(0, 0) } },
                 _ =>
@@ -83,9 +83,9 @@ namespace GridAiGames.Bomberman.Tests
 
             var grid = new TestGameGrid(
                 2, 2,
-                new TeamDefinition<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>[]
+                new TeamDefinition<ReadOnly.GameGrid, IPlayer, PlayerAction>[]
                 {
-                    new TeamDefinition<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>("Team A", new[] { new PlayerDefinition(PlayerName) }, intelligence)
+                    new TeamDefinition<ReadOnly.GameGrid, IPlayer, PlayerAction>("Team A", new[] { new PlayerDefinition(PlayerName) }, intelligence)
                 },
                 new Dictionary<string, Position>() { { PlayerName, new Position(0, 0) } },
                 _ =>
@@ -105,14 +105,14 @@ namespace GridAiGames.Bomberman.Tests
 
         internal class ExceptionThrowingIntelligence : IBombermanIntelligence
         {
-            public void Initialize(ReadOnly.GameGrid gameGrid, IReadOnlyList<ReadOnly.Player> teamPlayers)
+            public void Initialize(ReadOnly.GameGrid gameGrid, IReadOnlyList<IPlayer> teamPlayers)
             {
             }
 
             public IEnumerable<(string playerName, PlayerAction action)>
                 GetActionsForTeam(
                     ReadOnly.GameGrid gameGrid,
-                    IReadOnlyList<ReadOnly.Player> teamPlayers)
+                    IReadOnlyList<IPlayer> teamPlayers)
             {
                 throw null;
             }

@@ -3,7 +3,7 @@
 namespace GridAiGames
 {
     public interface IReadOnlyGameGrid<PlayerType, PlayerActionType>
-        where PlayerType : Player<PlayerType, PlayerActionType>
+        where PlayerType : IPlayer<PlayerType, PlayerActionType>
     {
         int Width { get; }
         int Height { get; }

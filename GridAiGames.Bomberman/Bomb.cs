@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
+using GridAiGames.Bomberman.ReadOnly;
 
 namespace GridAiGames.Bomberman
 {
-    internal class Bomb : GameObject<Player, PlayerAction>
+    internal class Bomb : GameObject<Player, PlayerAction>, IBomb
     {
         private readonly Player owner;
 

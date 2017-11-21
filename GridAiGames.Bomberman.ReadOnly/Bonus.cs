@@ -1,6 +1,11 @@
 ﻿namespace GridAiGames.Bomberman.ReadOnly
 {
-    public class Bonus : ReadOnlyGameObject
+    public interface IBonus : IReadOnlyGameObject
+    {
+        BonusType Type { get; }
+    }
+
+    public class Bonus : ReadOnlyGameObject, IBonus
     {
         public BonusType Type { get; }
 

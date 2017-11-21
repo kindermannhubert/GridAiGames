@@ -5,14 +5,14 @@ namespace GridAiGames.Bomberman
 {
     internal class DummyIntelligence : IBombermanIntelligence
     {
-        public void Initialize(ReadOnly.GameGrid gameGrid, IReadOnlyList<ReadOnly.Player> teamPlayers)
+        public void Initialize(ReadOnly.GameGrid gameGrid, IReadOnlyList<IPlayer> teamPlayers)
         {
         }
 
         public IEnumerable<(string playerName, PlayerAction action)>
             GetActionsForTeam(
                 ReadOnly.GameGrid gameGrid,
-                IReadOnlyList<ReadOnly.Player> teamPlayers)
+                IReadOnlyList<IPlayer> teamPlayers)
         {
             yield break;
         }

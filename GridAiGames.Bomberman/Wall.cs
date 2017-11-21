@@ -1,6 +1,8 @@
-﻿namespace GridAiGames.Bomberman
+﻿using GridAiGames.Bomberman.ReadOnly;
+
+namespace GridAiGames.Bomberman
 {
-    internal class Wall : GameObject<Player, PlayerAction>
+    internal class Wall : GameObject<Player, PlayerAction>, IWall
     {
         public bool IsDestroyable { get; }
 

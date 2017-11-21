@@ -11,14 +11,14 @@ namespace GridAiGames.Bomberman.SimpleIntelligence
 
         private readonly Random rand = new Random(5);
 
-        public void Initialize(GameGrid gameGrid, IReadOnlyList<Player> teamPlayers)
+        public void Initialize(GameGrid gameGrid, IReadOnlyList<IPlayer> teamPlayers)
         {
         }
 
         public IEnumerable<(string playerName, PlayerAction action)>
             GetActionsForTeam(
                 GameGrid gameGrid,
-                IReadOnlyList<Player> teamPlayers)
+                IReadOnlyList<IPlayer> teamPlayers)
         {
             foreach (var player in teamPlayers)
             {
@@ -26,7 +26,7 @@ namespace GridAiGames.Bomberman.SimpleIntelligence
             }
         }
 
-        private PlayerAction GetPlayerAction(GameGrid gameGrid, Player player)
+        private PlayerAction GetPlayerAction(GameGrid gameGrid, IPlayer player)
         {
             var nearestBomb = gameGrid.Bombs.OrderBy(b => b.Position.DistanceSquared(player.Position)).FirstOrDefault();
 
@@ -64,7 +64,7 @@ namespace GridAiGames.Bomberman.SimpleIntelligence
             }
         }
 
-        private static IEnumerable<Position> GetFreePositionsArroundPlayer(GameGrid gameGrid, Player player)
+        private static IEnumerable<Position> GetFreePositionsArroundPlayer(GameGrid gameGrid, IPlayer player)
         {
             var newPos = player.Position.Left;
             if (gameGrid.GetWall(newPos) == null && gameGrid.GetBomb(newPos) == null) yield return newPos;

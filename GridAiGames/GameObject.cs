@@ -1,7 +1,7 @@
 ﻿namespace GridAiGames
 {
-    public abstract class GameObject<PlayerType, PlayerActionType>
-        where PlayerType : Player<PlayerType, PlayerActionType>
+    public abstract class GameObject<PlayerType, PlayerActionType> : IReadOnlyGameObject
+        where PlayerType : IPlayer<PlayerType, PlayerActionType>
     {
         public Position Position { get; internal set; }
 

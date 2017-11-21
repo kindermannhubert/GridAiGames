@@ -1,6 +1,6 @@
 ﻿namespace GridAiGames
 {
-    public abstract class ReadOnlyGameObject
+    public abstract class ReadOnlyGameObject : IReadOnlyGameObject
     {
         public Position Position { get; }
 

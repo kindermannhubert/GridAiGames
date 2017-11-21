@@ -1,6 +1,11 @@
 ﻿namespace GridAiGames.Bomberman.ReadOnly
 {
-    public class Wall : ReadOnlyGameObject
+    public interface IWall : IReadOnlyGameObject
+    {
+        bool IsDestroyable { get; }
+    }
+
+    public class Wall : ReadOnlyGameObject, IWall
     {
         public bool IsDestroyable { get; }
 

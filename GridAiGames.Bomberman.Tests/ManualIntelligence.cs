@@ -7,14 +7,14 @@ namespace GridAiGames.Bomberman.Tests
     {
         private readonly Dictionary<string, List<PlayerAction>> nextActions = new Dictionary<string, List<PlayerAction>>();
 
-        public void Initialize(ReadOnly.GameGrid gameGrid, IReadOnlyList<ReadOnly.Player> teamPlayers)
+        public void Initialize(ReadOnly.GameGrid gameGrid, IReadOnlyList<IPlayer> teamPlayers)
         {
         }
 
         public IEnumerable<(string playerName, PlayerAction action)>
             GetActionsForTeam(
                 ReadOnly.GameGrid gameGrid,
-                IReadOnlyList<ReadOnly.Player> teamPlayers)
+                IReadOnlyList<IPlayer> teamPlayers)
         {
             foreach (var player in teamPlayers)
             {

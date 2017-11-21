@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GridAiGames.Logging;
 
 namespace GridAiGames.Bomberman.Tests
 {
@@ -8,9 +9,10 @@ namespace GridAiGames.Bomberman.Tests
         public BoundedTestGameGrid(
             int width,
             int height,
-            IReadOnlyList<TeamDefinition<ReadOnly.GameGrid, ReadOnly.Player, PlayerAction>> teamDefinitions,
+            IReadOnlyList<TeamDefinition<ReadOnly.GameGrid, ReadOnly.IPlayer, PlayerAction>> teamDefinitions,
             Dictionary<string, Position> playerPositionsPerName,
-            Action<GameGrid> addGameObjects)
+            Action<GameGrid> addGameObjects,
+            ILogger logger = null)
             : base(width,
                    height,
                    teamDefinitions,
@@ -19,7 +21,8 @@ namespace GridAiGames.Bomberman.Tests
                    {
                        AddBounds(grid);
                        addGameObjects(grid);
-                   })
+                   },
+                   logger)
         {
         }
 

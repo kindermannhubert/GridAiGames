@@ -6,24 +6,24 @@ namespace GridAiGames.Bomberman.ReadOnly
 {
     public class GameGrid
     {
-        private readonly IReadOnlyList<ReadOnlyGameObject>[,] allObjects;
-        private readonly List<Wall> allWalls;
-        private readonly List<Bomb> allBombs;
-        private readonly List<Bonus> allBonuses;
+        private readonly IReadOnlyList<IReadOnlyGameObject>[,] allObjects;
+        private readonly List<IWall> allWalls;
+        private readonly List<IBomb> allBombs;
+        private readonly List<IBonus> allBonuses;
 
-        private readonly Wall[,] walls;
-        private readonly Bomb[,] bombs;
-        private readonly Bonus[,] bonuses;
+        private readonly IWall[,] walls;
+        private readonly IBomb[,] bombs;
+        private readonly IBonus[,] bonuses;
 
         public int Width { get; }
         public int Height { get; }
 
-        public IReadOnlyList<Player> Players { get; private set; }
-        public IReadOnlyList<Wall> Walls => allWalls;
-        public IReadOnlyList<Bomb> Bombs => allBombs;
-        public IReadOnlyList<Bonus> Bonuses => allBonuses;
+        public IReadOnlyList<IPlayer> Players { get; private set; }
+        public IReadOnlyList<IWall> Walls => allWalls;
+        public IReadOnlyList<IBomb> Bombs => allBombs;
+        public IReadOnlyList<IBonus> Bonuses => allBonuses;
 
-        public IEnumerable<ReadOnlyGameObject> Objects
+        public IEnumerable<IReadOnlyGameObject> Objects
         {
             get
             {
@@ -43,16 +43,49 @@ namespace GridAiGames.Bomberman.ReadOnly
 
             allObjects = new IReadOnlyList<ReadOnlyGameObject>[width, height];
 
-            allWalls = new List<Wall>(width * height);
-            allBombs = new List<Bomb>(width * height);
-            allBonuses = new List<Bonus>(width * height);
+            allWalls = new List<IWall>(width * height);
+            allBombs = new List<IBomb>(width * height);
+            allBonuses = new List<IBonus>(width * height);
 
             walls = new Wall[width, height];
             bombs = new Bomb[width, height];
             bonuses = new Bonus[width, height];
         }
 
-        public void SetUp(IReadOnlyList<ReadOnlyGameObject>[,] allObjects, IReadOnlyList<Player> allPlayers)
+        public IReadOnlyList<IReadOnlyGameObject> GetObjects(Position position) => GetObjects(position.X, position.Y);
+        public IReadOnlyList<IReadOnlyGameObject> GetObjects(int x, int y) => allObjects[x, y];
+
+        /// <summary>
+        /// Returns null if there is no wall.
+        /// </summary>
+        public IWall GetWall(Position position) => GetWall(position.X, position.Y);
+
+        /// <summary>
+        /// Returns null if there is no wall.
+        /// </summary>
+        public IWall GetWall(int x, int y) => walls[x, y];
+
+        /// <summary>
+        /// Returns null if there is no bomb.
+        /// </summary>
+        public IBomb GetBomb(Position position) => GetBomb(position.X, position.Y);
+
+        /// <summary>
+        /// Returns null if there is no bomb.
+        /// </summary>
+        public IBomb GetBomb(int x, int y) => bombs[x, y];
+
+        /// <summary>
+        /// Returns null if there is no bonus.
+        /// </summary>
+        public IBonus GetBonus(Position position) => GetBonus(position.X, position.Y);
+
+        /// <summary>
+        /// Returns null if there is no bonus.
+        /// </summary>
+        public IBonus GetBonus(int x, int y) => bonuses[x, y];
+
+        internal void SetUp(IReadOnlyList<IReadOnlyGameObject>[,] allObjects, IReadOnlyList<IPlayer> allPlayers)
         {
             Players = allPlayers;
 
@@ -94,38 +127,5 @@ namespace GridAiGames.Bomberman.ReadOnly
                     }
                 }
         }
-
-        public IReadOnlyList<ReadOnlyGameObject> GetObjects(Position position) => GetObjects(position.X, position.Y);
-        public IReadOnlyList<ReadOnlyGameObject> GetObjects(int x, int y) => allObjects[x, y];
-
-        /// <summary>
-        /// Returns null if there is no wall.
-        /// </summary>
-        public Wall GetWall(Position position) => GetWall(position.X, position.Y);
-
-        /// <summary>
-        /// Returns null if there is no wall.
-        /// </summary>
-        public Wall GetWall(int x, int y) => walls[x, y];
-
-        /// <summary>
-        /// Returns null if there is no bomb.
-        /// </summary>
-        public Bomb GetBomb(Position position) => GetBomb(position.X, position.Y);
-
-        /// <summary>
-        /// Returns null if there is no bomb.
-        /// </summary>
-        public Bomb GetBomb(int x, int y) => bombs[x, y];
-
-        /// <summary>
-        /// Returns null if there is no bonus.
-        /// </summary>
-        public Bonus GetBonus(Position position) => GetBonus(position.X, position.Y);
-
-        /// <summary>
-        /// Returns null if there is no bonus.
-        /// </summary>
-        public Bonus GetBonus(int x, int y) => bonuses[x, y];
     }
 }

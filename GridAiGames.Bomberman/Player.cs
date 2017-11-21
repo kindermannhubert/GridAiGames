@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using GridAiGames.Bomberman.ReadOnly;
 
 namespace GridAiGames.Bomberman
 {
-    internal class Player : Player<Player, PlayerAction>
+    internal class Player : Player<Player, PlayerAction>, IPlayer
     {
         private int maxPossibleNumberOfBombs = 1;
         private int life = 1;
