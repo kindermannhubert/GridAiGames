@@ -67,16 +67,16 @@ namespace GridAiGames.Bomberman.SimpleIntelligence
         private static IEnumerable<Position> GetFreePositionsArroundPlayer(GameGrid gameGrid, IPlayer player)
         {
             var newPos = player.Position.Left;
-            if (gameGrid.GetWall(newPos) == null && gameGrid.GetBomb(newPos) == null) yield return newPos;
+            if (gameGrid.IsPositionAvailableForPlayer(newPos)) yield return newPos;
 
             newPos = player.Position.Up;
-            if (gameGrid.GetWall(newPos) == null && gameGrid.GetBomb(newPos) == null) yield return newPos;
+            if (gameGrid.IsPositionAvailableForPlayer(newPos)) yield return newPos;
 
             newPos = player.Position.Right;
-            if (gameGrid.GetWall(newPos) == null && gameGrid.GetBomb(newPos) == null) yield return newPos;
+            if (gameGrid.IsPositionAvailableForPlayer(newPos)) yield return newPos;
 
             newPos = player.Position.Down;
-            if (gameGrid.GetWall(newPos) == null && gameGrid.GetBomb(newPos) == null) yield return newPos;
+            if (gameGrid.IsPositionAvailableForPlayer(newPos)) yield return newPos;
         }
 
         private static PlayerAction DirectionToMoveAction(Position direction)
