@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using GridAiGames.Bomberman.ReadOnly;
+﻿using GridAiGames.Bomberman.ReadOnly;
 
 namespace GridAiGames.Bomberman
 {
@@ -30,50 +28,14 @@ namespace GridAiGames.Bomberman
         public void Detonate(IGameGrid<Player, PlayerAction> gameGrid)
         {
             gameGrid.RemoveObject(this);
-            gameGrid.AddObject(new BombDetonationFire(Position, BombDetonationFireType.Center));
 
-            FillOneDirectionWithFire(gameGrid, Position, new Position(-1, 0));
-            FillOneDirectionWithFire(gameGrid, Position, new Position(0, 1));
-            FillOneDirectionWithFire(gameGrid, Position, new Position(1, 0));
-            FillOneDirectionWithFire(gameGrid, Position, new Position(0, -1));
+            foreach (var detonatedPosition in gameGrid.EnumerateDetonationFirePositions(this))
+            {
+                if (detonatedPosition == Position) gameGrid.AddObject(new BombDetonationFire(Position, BombDetonationFireType.Center));
+                else gameGrid.AddObject(new BombDetonationFire(detonatedPosition, Position.Y == detonatedPosition.Y ? BombDetonationFireType.Horizontal : BombDetonationFireType.Vertical));
+            }
 
             owner?.BombDetonated();
-        }
-
-        private Position FillOneDirectionWithFire(IGameGrid<Player, PlayerAction> gameGrid, Position currentPos, Position delta)
-        {
-            for (int r = 0; r < Radius - 1; r++)
-            {
-                currentPos += delta;
-                if (IsPositionAvailableForFire(gameGrid, currentPos))
-                {
-                    gameGrid.AddObject(new BombDetonationFire(currentPos, delta.Y == 0 ? BombDetonationFireType.Horizontal : BombDetonationFireType.Vertical));
-
-                    if (gameGrid.GetObjects(currentPos).Any(o => o is Wall || o is Bonus)) break; //stop spreading fire after hit of first destoyable wall or bonus
-                }
-                else break;
-            }
-
-            return currentPos;
-        }
-
-        private bool IsPositionAvailableForFire(IGameGrid<Player, PlayerAction> gameGrid, Position position)
-        {
-            foreach (var obj in gameGrid.GetObjects(position))
-            {
-                switch (obj)
-                {
-                    case Wall w:
-                        return w.IsDestroyable;
-                    case Bomb _:
-                    case BombDetonationFire _:
-                    case Bonus _:
-                        return true;
-                    default:
-                        throw new InvalidOperationException($"Unknown object type: '{obj.GetType().FullName}'.");
-                }
-            }
-            return true;
         }
     }
 }
