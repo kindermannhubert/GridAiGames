@@ -27,15 +27,20 @@ namespace GridAiGames.Bomberman
 
         public void Detonate(IGameGrid<Player, PlayerAction> gameGrid)
         {
-            gameGrid.RemoveObject(this);
+            var (bombs, firePositions) = gameGrid.GetDetonationFirePositions(this);
 
-            foreach (var detonatedPosition in gameGrid.EnumerateDetonationFirePositions(this))
+            foreach (Bomb bomb in bombs)
+            {
+                gameGrid.RemoveObject(bomb);
+                bomb.owner?.BombDetonated();
+            }
+
+            foreach (var detonatedPosition in firePositions)
             {
                 if (detonatedPosition == Position) gameGrid.AddObject(new BombDetonationFire(Position, BombDetonationFireType.Center));
                 else gameGrid.AddObject(new BombDetonationFire(detonatedPosition, Position.Y == detonatedPosition.Y ? BombDetonationFireType.Horizontal : BombDetonationFireType.Vertical));
             }
 
-            owner?.BombDetonated();
         }
     }
 }

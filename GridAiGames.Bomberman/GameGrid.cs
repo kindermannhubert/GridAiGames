@@ -142,23 +142,6 @@ namespace GridAiGames.Bomberman
                     var objects = GetObjects(x, y);
                     if (objects.Any(o => o is BombDetonationFire f && f.IsBurning))
                     {
-                        //detonate other bombs
-                        objectList.Clear();
-                        objectList.AddRange(objects.OfType<Bomb>());
-                        foreach (Bomb bomb in objectList)
-                        {
-                            Debug.Assert(bomb.Position == new Position(x, y));
-                            bomb.Detonate(this);
-                        }
-                    }
-                }
-
-            for (int y = 0; y < Height; y++)
-                for (int x = 0; x < Width; x++)
-                {
-                    var objects = GetObjects(x, y);
-                    if (objects.Any(o => o is BombDetonationFire f && f.IsBurning))
-                    {
                         //damage players
                         objectList.Clear();
                         objectList.AddRange(GetPlayers(x, y));

@@ -44,26 +44,52 @@ namespace GridAiGames.Bomberman.ReadOnly
             return true;
         }
 
-        public static IEnumerable<Position> EnumerateDetonationFirePositions(this IReadOnlyGameGrid gameGrid, IBomb bomb)
+        public static (List<IBomb> detonatedBombs, List<Position> burntPositions) GetDetonationFirePositions(this IReadOnlyGameGrid gameGrid, IBomb bomb)
         {
-            yield return bomb.Position;
-            foreach (var pos in FillOneDirectionWithFire(bomb.Position, new Position(-1, 0))) yield return pos;
-            foreach (var pos in FillOneDirectionWithFire(bomb.Position, new Position(0, 1))) yield return pos;
-            foreach (var pos in FillOneDirectionWithFire(bomb.Position, new Position(1, 0))) yield return pos;
-            foreach (var pos in FillOneDirectionWithFire(bomb.Position, new Position(0, -1))) yield return pos;
+            var detonatedBombs = new List<IBomb>(32);
+            var burntPositions = new List<Position>(128);
 
-            IEnumerable<Position> FillOneDirectionWithFire(Position currentPos, Position delta)
+            GetDetonationFirePositions(gameGrid, bomb, detonatedBombs, burntPositions);
+
+            return (detonatedBombs, burntPositions);
+        }
+
+        private static void GetDetonationFirePositions(IReadOnlyGameGrid gameGrid, IBomb bomb, List<IBomb> detonatedBombs, List<Position> burntPositions)
+        {
+            if (detonatedBombs.Contains(bomb))
+            {
+                return;
+            }
+            else
+            {
+                detonatedBombs.Add(bomb);
+            }
+
+            burntPositions.Add(bomb.Position);
+            FillOneDirectionWithFire(bomb.Position, new Position(-1, 0));
+            FillOneDirectionWithFire(bomb.Position, new Position(0, 1));
+            FillOneDirectionWithFire(bomb.Position, new Position(1, 0));
+            FillOneDirectionWithFire(bomb.Position, new Position(0, -1));
+
+            void FillOneDirectionWithFire(Position currentPos, Position delta)
             {
                 for (int r = 0; r < bomb.Radius - 1; r++)
                 {
                     currentPos += delta;
                     if (IsPositionAvailableForFire(currentPos))
                     {
-                        yield return currentPos;
+                        bool anyAnotherBomb = false;
+                        foreach (var anotherBomb in gameGrid.GetObjects(currentPos).OfType<IBomb>())
+                        {
+                            GetDetonationFirePositions(gameGrid, anotherBomb, detonatedBombs, burntPositions);
+                            anyAnotherBomb = true;
+                        }
+
+                        if (!anyAnotherBomb) burntPositions.Add(currentPos);
 
                         if (gameGrid.GetObjects(currentPos).Any(o => o is IWall || o is IBonus)) break; //stop spreading fire after hit of first destoyable wall or bonus
                     }
-                    else yield break;
+                    else return;
                 }
             }
 
